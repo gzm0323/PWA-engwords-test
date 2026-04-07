@@ -155,7 +155,9 @@ td {
   width: 25%;
   padding: .5em 1em 0em 0em;
   vertical-align: top;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @media (max-width: 520px) {
@@ -193,6 +195,11 @@ td {
 
   #content {
     padding: 1.2em 5%;
+    overflow-x: auto;
+  }
+
+  #content table {
+    min-width: 520px;
   }
 
   td {
