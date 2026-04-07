@@ -12,6 +12,9 @@ a {
 #header {
   font-size: 2.5em
 }
+.title-short {
+  display: none;
+}
 #navigation {
   font-family: "Lucida Grande","Helvetica","Arial",sans-serif;
 }

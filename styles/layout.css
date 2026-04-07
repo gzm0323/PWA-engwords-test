@@ -164,7 +164,19 @@ td {
   }
 
   #header > p {
-    padding: 1.2em 6%;
+    padding: .6em 6%;
+  }
+
+  #header {
+    font-size: 1.6em;
+  }
+
+  #header .title-full {
+    display: none;
+  }
+
+  #header .title-short {
+    display: inline;
   }
 
   #navigation {
