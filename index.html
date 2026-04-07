@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>初中英语单词练习测试机</title>
+    <meta
+      name="description"
+      content="初中英语单词练习：随机出题，显示/隐藏答案，英汉互测。"
+    />
+    <meta name="theme-color" content="#334" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="styles/basic.css" media="screen" />
+
+    <script src="scripts/jquery-1.11.3.js" defer></script>
+    <script src="./words_f.txt" defer></script>
+    <script src="scripts/status.js" defer></script>
+    <script src="./pwa.js" defer></script>
+  </head>
+  <body>
+    <div id="header">
+      <p>初中英语单词练习测试机</p>
+    </div>
+
+    <div id="navigation" aria-label="导航">
+      <ul>
+        <li class="nav-primary"><a href="EtoC.html">看英文写中文</a></li>
+        <li class="nav-primary"><a href="CtoE.html">看中文写英文</a></li>
+        <li class="nav-secondary">
+          <span class="nav-disabled" aria-disabled="true">勤学不辍</span>
+        </li>
+        <li class="nav-secondary">
+          <span class="nav-disabled" aria-disabled="true">铁杵成针</span>
+        </li>
+        <li class="nav-secondary">
+          <span class="nav-disabled" aria-disabled="true">日积月累</span>
+        </li>
+        <li class="nav-secondary">
+          <span class="nav-disabled" aria-disabled="true">水滴石穿</span>
+        </li>
+      </ul>
+    </div>
+
+    <div id="content">
+      <button id="btn1" type="button" onclick="getEnglishWords();">
+        随机出题
+      </button>
+      <button
+        id="btn2"
+        type="button"
+        onclick="showAnswer('chinese');"
+        aria-controls="words-table"
+      >
+        <info text="no">显示答案</info>
+      </button>
+
+      <table id="words-table">
+        <tbody></tbody>
+      </table>
+    </div>
+  </body>
+</html>

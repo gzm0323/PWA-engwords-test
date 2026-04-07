@@ -1,0 +1,19 @@
+{
+  "name": "初中英语单词练习测试机",
+  "short_name": "英语单词练习",
+  "description": "初中英语单词练习：随机出题，显示/隐藏答案，英汉互测。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#334",
+  "theme_color": "#334",
+  "icons": [
+    {
+      "src": "./app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
+

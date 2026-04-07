@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>初中英语单词练习测试机</title>
+  <meta name="theme-color" content="#334" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" type="text/css" media="screen" href="styles/basic.css" />
+  <script type="text/javascript" src="scripts/jquery-1.11.3.js"></script>
+  <script type="text/javascript" src="./words_f.txt"></script>
+  <script type="text/javascript" src="scripts/status.js"></script>
+  <script type="text/javascript" src="./pwa.js"></script>
+</head>
+<body>
+  <div id="header">
+    <p>初中英语单词练习测试机</p>
+  </div>
+  <div id="navigation">
+    <ul>
+      <li class="nav-primary"><a href="EtoC.html">看英文写中文</a></li>
+      <li class="nav-primary"><a class="here" href="CtoE.html">看中文写英文</a></li>
+      <li class="nav-secondary">
+        <span class="nav-disabled" aria-disabled="true">勤学不辍</span>
+      </li>
+      <li class="nav-secondary">
+        <span class="nav-disabled" aria-disabled="true">铁杵成针</span>
+      </li>
+      <li class="nav-secondary">
+        <span class="nav-disabled" aria-disabled="true">日积月累</span>
+      </li>
+      <li class="nav-secondary">
+        <span class="nav-disabled" aria-disabled="true">水滴石穿</span>
+      </li>
+    </ul>
+  </div>
+  <div id="content">
+    <button id="btn1" onclick="getChineseWords();">随机出题</button>
+    <button id="btn2" onclick="showAnswer('english');"><info text="no">显示答案</info></button>
+  <table>
+    </table>
+  </div>
+</body>
+</html>
