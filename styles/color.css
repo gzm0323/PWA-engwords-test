@@ -86,12 +86,23 @@ th {
 tr td {
   color: #223;
   background-color: #eb6;
+  border-bottom: 1px solid rgba(68, 85, 85, 0.35);
 }
 tr.odd td {
   color: #223;
   background-color: #ec8;
+  border-bottom: 1px solid rgba(68, 85, 85, 0.35);
 }
 tr.highlight td {
   color: #223;
   background-color: #cba;
+  border-bottom: 1px solid rgba(68, 85, 85, 0.35);
+}
+
+#content table {
+  border: 1px solid rgba(68, 85, 85, 0.35);
+}
+
+#content table tr:last-child td {
+  border-bottom: 0;
 }
