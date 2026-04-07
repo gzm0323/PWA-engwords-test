@@ -76,6 +76,12 @@ body {
   text-align: center;
 }
 
+#content table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
 #content #item1 {
   text-align: left;
 }
@@ -146,8 +152,10 @@ fieldset {
 }
 td {
 /*  padding: .5em 3em;*/
-  width: 18em;
+  width: 25%;
   padding: .5em 1em 0em 0em;
+  vertical-align: top;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 520px) {

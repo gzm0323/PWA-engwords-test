@@ -43,7 +43,7 @@ function showAnswer(Str) {
   info = $('button info').attr("text");
   if(info=="no") {
     $('button info').attr("text","yes");
-    $(Str).attr("style",'display:yes');
+    $(Str).attr("style",'display:inline');
     B=$('#btn2 info');
     B.text("关闭答案");
   }
