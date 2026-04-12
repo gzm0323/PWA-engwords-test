@@ -1,63 +1,63 @@
 body {
-  font-size: 76%;
-  font-family: "Helvetica","Arial",sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-body * {
-  font-size: 1em;
-}
+
 a {
-  font-weight: bold;
   text-decoration: none;
+  font-weight: 600;
 }
+
 #header {
-  font-size: 2.5em
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
 }
+
 .title-short {
   display: none;
 }
-#navigation {
-  font-family: "Lucida Grande","Helvetica","Arial",sans-serif;
-}
+
 #navigation a,
 #navigation span.nav-disabled {
-  text-decoration: none;
-  font-weight: bold;
-  font-size: clamp(1em, 3.6vw, 2em);
-}
-#content {
-  font-size: 1.5em;
-  line-height: 1.8em;
-}
-#content p {
-  margin: 1em 0;
-}
-#content #ip_conf {
-  font-size: 1em;
+  font-weight: 600;
+  font-size: 1rem;
 }
 
-h1 { 
-  font-family: "Georgia","Times New Roman",sans-serif;
-  font: 2.4em normal;
+#content {
+  font-size: 1.05rem;
 }
-h2 {
-  font-family: "Georgia","Times New Roman",sans-serif;
-  font: 1.8em normal;
-  margin-top: 1em;
+
+button {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 1rem;
 }
-h3 {
-  font-family: "Georgia","Times New Roman",sans-serif;
-  font: 1.4em normal;
-  margin-top: 1em;
+
+#content td {
+  font-size: 1.15rem;
+  font-weight: 500;
 }
-#imagegallery li {
-  list-style-type: none;
+
+#content td english, #content td chinese {
+  font-size: 1.05rem;
+  font-weight: 400;
 }
-dt {
-  margin-right: 1em;
+
+#content.sentence-page .sentence-intro {
+  font-size: 1rem;
 }
-dd {
-  margin-right: 3em;
+
+#content.sentence-page .sentence-en {
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.4;
 }
-textarea {
-  font-family: "Helvetica","Arial",sans-serif;
+
+#content.sentence-page .sentence-gloss {
+  font-size: 1.1rem;
+  line-height: 1.6;
 }
