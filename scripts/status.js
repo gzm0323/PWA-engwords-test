@@ -14,6 +14,13 @@ function resetAnswerUI(tagName) {
   B.text("显示答案");
 }
 
+function pickWordIndex() {
+  if (typeof WordPolicy !== "undefined" && WordPolicy.pickIndex) {
+    return WordPolicy.pickIndex(words, null);
+  }
+  return Math.floor((words.length / 2) * Math.random());
+}
+
 function getEnglishWords() {
   content = $("#content table");
   $("#content table tr").remove();
@@ -21,7 +28,7 @@ function getEnglishWords() {
 
   if (isMobileLayout()) {
     for (i = 0; i < 10; i++) {
-      k1 = Math.floor(len * Math.random());
+      k1 = pickWordIndex();
       s1 =
         "<tr><td>" +
         words[k1 * 2] +
@@ -35,14 +42,14 @@ function getEnglishWords() {
   }
 
   for (i = 0; i < 5; i++) {
-    k1 = Math.floor(len * Math.random());
+    k1 = pickWordIndex();
     s1 =
       "<tr><td>" +
       words[k1 * 2] +
       "</td><td><chinese style='display:none'>" +
       words[k1 * 2 + 1] +
       "</chinese></td>";
-    k2 = Math.floor(len * Math.random());
+    k2 = pickWordIndex();
     s2 =
       "<td>" +
       words[k2 * 2] +
@@ -61,7 +68,7 @@ function getChineseWords() {
 
   if (isMobileLayout()) {
     for (i = 0; i < 10; i++) {
-      k1 = Math.floor(len * Math.random());
+      k1 = pickWordIndex();
       s1 =
         "<tr><td>" +
         words[k1 * 2 + 1] +
@@ -75,14 +82,14 @@ function getChineseWords() {
   }
 
   for (i = 0; i < 5; i++) {
-    k1 = Math.floor(len * Math.random());
+    k1 = pickWordIndex();
     s1 =
       "<tr><td>" +
       words[k1 * 2 + 1] +
       "</td><td><english style='display:none'>" +
       words[k1 * 2] +
       "</english></td>";
-    k2 = Math.floor(len * Math.random());
+    k2 = pickWordIndex();
     s2 =
       "<td>" +
       words[k2 * 2 + 1] +
