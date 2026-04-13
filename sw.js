@@ -1,5 +1,5 @@
 /* eslint-disable */
-const CACHE_NAME = "engwords-pwa-v7";
+const CACHE_NAME = "engwords-pwa-v8";
 
 const PRECACHE_URLS = [
   "./",
@@ -50,25 +50,24 @@ self.addEventListener("fetch", (event) => {
   // Only handle same-origin GET requests
   if (req.method !== "GET" || url.origin !== self.location.origin) return;
 
+  // Network-first: online users get latest HTML/JS; offline falls back to cache.
+  // (Cache-first was causing desktop to keep old precached pages after deploy.)
   event.respondWith(
-    caches.match(req).then((cached) => {
-      if (cached) return cached;
-
-      return fetch(req)
-        .then((res) => {
-          // Cache successful basic responses for next time
-          if (res && res.status === 200 && res.type === "basic") {
-            const copy = res.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
-          }
-          return res;
-        })
-        .catch(() => {
-          // Offline fallback: try main page
+    fetch(req)
+      .then((res) => {
+        if (res && res.status === 200 && res.type === "basic") {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+        }
+        return res;
+      })
+      .catch(() =>
+        caches.match(req).then((cached) => {
+          if (cached) return cached;
           if (req.mode === "navigate") return caches.match("./index.html");
-          return cached;
-        });
-    })
+          return new Response("", { status: 503, statusText: "Offline" });
+        })
+      )
   );
 });
 
