@@ -101,3 +101,31 @@ button {
 #content.roots-page .roots-example-zh {
   font-size: 1.02rem;
 }
+
+#content.accumulate-page .accumulate-intro {
+  font-size: 1rem;
+}
+
+#content.accumulate-page .accumulate-progress {
+  font-size: 0.95rem;
+}
+
+#content.accumulate-page .accumulate-word {
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+#content.accumulate-page .accumulate-pos {
+  font-size: 1rem;
+}
+
+#content.accumulate-page .accumulate-story-en {
+  font-size: 1.12rem;
+  font-weight: 500;
+}
+
+#content.accumulate-page .accumulate-translation {
+  font-size: 1.08rem;
+  line-height: 1.65;
+}

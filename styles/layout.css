@@ -245,3 +245,54 @@ button:active {
     font-size: 0.95rem;
   }
 }
+
+#content.accumulate-page .accumulate-intro {
+  margin-bottom: 20px;
+  opacity: 0.88;
+  line-height: 1.65;
+}
+
+#content.accumulate-page .accumulate-actions {
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+#content.accumulate-page .accumulate-actions button {
+  margin: 0;
+}
+
+#content.accumulate-page .accumulate-display {
+  margin-bottom: 8px;
+}
+
+#content.accumulate-page .accumulate-progress {
+  margin-bottom: 12px;
+  opacity: 0.85;
+}
+
+#content.accumulate-page .accumulate-word {
+  margin: 8px 0 8px;
+}
+
+#content.accumulate-page .accumulate-pos {
+  margin-bottom: 16px;
+}
+
+#content.accumulate-page .accumulate-story-en {
+  line-height: 1.75;
+  word-break: break-word;
+}
+
+#content.accumulate-page .accumulate-translation {
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 16px;
+}
+
+@media (max-width: 600px) {
+  #content.accumulate-page .accumulate-intro {
+    font-size: 0.95rem;
+  }
+}

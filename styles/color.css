@@ -116,3 +116,8 @@ button:hover {
   background-color: var(--table-stripe);
   border: 1px solid var(--border-color);
 }
+
+#content.accumulate-page .accumulate-translation {
+  background-color: var(--table-stripe);
+  border: 1px solid var(--border-color);
+}

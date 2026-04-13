@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>水滴石穿 · 词根学习</title>
+    <title>日积月累 · 单词故事</title>
     <meta
       name="description"
-      content="按字母顺序学习初中英语常见词根：讲解、例词与例句。"
+      content="按字母顺序阅读初中英语实词小故事，可查看中文翻译。"
     />
     <meta name="theme-color" content="#334" />
     <link rel="manifest" href="manifest.webmanifest" />
@@ -14,7 +14,7 @@
     <script src="scripts/jquery-1.11.3.js" defer></script>
     <script src="./words_f.txt" defer></script>
     <script src="scripts/word_policy.js" defer></script>
-    <script src="scripts/word_roots.js" defer></script>
+    <script src="scripts/word_stories.js" defer></script>
     <script src="./pwa.js" defer></script>
   </head>
   <body>
@@ -36,22 +36,31 @@
           <span class="nav-disabled" aria-disabled="true">铁杵成针</span>
         </li>
         <li class="nav-secondary">
-          <a href="accumulate.html">日积月累</a>
+          <a class="here" href="accumulate.html">日积月累</a>
         </li>
         <li class="nav-secondary">
-          <a class="here" href="roots.html">水滴石穿</a>
+          <a href="roots.html">水滴石穿</a>
         </li>
       </ul>
     </div>
 
-    <div id="content" class="roots-page">
-      <p class="roots-intro">
-        本模块收录初中英语阅读中常见的拉丁/希腊词根与高频前缀。每点击一次「下一个词根」，按<strong>字母顺序</strong>展示一个词根，含简要讲解、例词与英例句（附中文）。
+    <div id="content" class="accumulate-page">
+      <p class="accumulate-intro">
+        本模块从<strong>初中英语词汇</strong>常见范围中选取<strong>名词、动词、形容词等实词</strong>，按<strong>英文字母顺序</strong>编排；每个词配一段<strong>英文小故事</strong>，帮助在语境中记忆。需要时可点击「中文翻译」查看全文译文。
       </p>
-      <div class="roots-actions">
-        <button id="btn-next-root" type="button">下一个词根</button>
+      <div class="accumulate-actions">
+        <button id="btn-next-word-story" type="button">下一个词</button>
+        <button id="btn-toggle-story-zh" type="button">
+          <info text="no">中文翻译</info>
+        </button>
       </div>
-      <div id="roots-display" class="roots-display" aria-live="polite"></div>
+      <div id="accumulate-display" class="accumulate-display" aria-live="polite"></div>
+      <p
+        id="accumulate-translation"
+        class="accumulate-translation"
+        style="display: none"
+        lang="zh-CN"
+      ></p>
     </div>
   </body>
 </html>
