@@ -296,3 +296,26 @@ button:active {
     font-size: 0.95rem;
   }
 }
+
+#content.needle-page .needle-intro {
+  margin-bottom: 20px;
+  opacity: 0.88;
+  line-height: 1.65;
+}
+
+#content.needle-page .needle-actions {
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+#content.needle-page .needle-actions button {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  #content.needle-page .needle-intro {
+    font-size: 0.95rem;
+  }
+}

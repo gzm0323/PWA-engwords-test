@@ -1,5 +1,5 @@
 /* eslint-disable */
-const CACHE_NAME = "engwords-pwa-v10";
+const CACHE_NAME = "engwords-pwa-v11";
 
 const PRECACHE_URLS = [
   "./",
@@ -7,6 +7,7 @@ const PRECACHE_URLS = [
   "./EtoC.html",
   "./CtoE.html",
   "./sentence.html",
+  "./needle.html",
   "./accumulate.html",
   "./roots.html",
   "./nim.html",
@@ -22,6 +23,8 @@ const PRECACHE_URLS = [
   "./scripts/word_policy.js",
   "./scripts/status.js",
   "./scripts/sentence.js",
+  "./scripts/hard_words.js",
+  "./scripts/needle.js",
   "./scripts/word_roots.js",
   "./scripts/word_stories.js",
   "./scripts/nim.js"

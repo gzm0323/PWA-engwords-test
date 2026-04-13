@@ -129,3 +129,7 @@ button {
   font-size: 1.08rem;
   line-height: 1.65;
 }
+
+#content.needle-page .needle-intro {
+  font-size: 1rem;
+}
