@@ -1,9 +1,23 @@
 /**
- * 随机选择词库中的单词，并通过免费字典 API (Free Dictionary API) 
- * 获取包含该词的真实、符合语法的英语例句。
+ * 随机选择词库中的单词，并通过免费字典 API (Free Dictionary API)
+ * 获取包含该词的真实、符合语法的英语例句（长度不超过 MAX_SENTENCE_WORDS）。
  */
+var MAX_SENTENCE_WORDS = 20;
+
 function trimEnglishLemma(en) {
   return String(en == null ? "" : en).replace(/\s+/g, " ").trim();
+}
+
+function countEnglishWords(text) {
+  var s = String(text == null ? "" : text).trim();
+  if (!s) return 0;
+  return s.split(/\s+/).filter(function (w) {
+    return w.length > 0;
+  }).length;
+}
+
+function isSentenceWithinWordLimit(text) {
+  return countEnglishWords(text) <= MAX_SENTENCE_WORDS;
 }
 
 function collectValidIndices() {
@@ -57,8 +71,8 @@ async function fetchExampleSentence(word) {
         }
       }
     }
+    examples = examples.filter(isSentenceWithinWordLimit);
     if (examples.length > 0) {
-      // 随机选一个例句
       return examples[Math.floor(Math.random() * examples.length)];
     }
   } catch (e) {
@@ -68,27 +82,38 @@ async function fetchExampleSentence(word) {
 }
 
 async function buildRandomSentence() {
-  // 尝试最多 10 次获取真实例句
-  for (let i = 0; i < 10; i++) {
+  // 尝试多次：同一词条可能只有超长例句，会返回 null 并重试随机词
+  for (let i = 0; i < 15; i++) {
     let wordData = getRandomWordData();
     let example = await fetchExampleSentence(wordData.en);
     if (example) {
       // 首字母大写
       example = example.charAt(0).toUpperCase() + example.slice(1);
       if (!/[.!?]$/.test(example)) example += "."; // 补充标点
-      
+      if (!isSentenceWithinWordLimit(example)) continue;
+
       return {
         en: example,
         gloss: "【" + wordData.en + "】 → " + wordData.zh
       };
     }
   }
-  
-  // 如果 API 失败多次，回退到一个兜底的通用真实例句模板
-  let wordData = getRandomWordData();
+
+  // 如果 API 失败或始终没有符合长度限制的例句，使用兜底模板（保证不超过 20 词）
+  for (let j = 0; j < 8; j++) {
+    let wordData = getRandomWordData();
+    let fallback =
+      "Here is a sentence containing the word '" + wordData.en + "'.";
+    if (isSentenceWithinWordLimit(fallback)) {
+      return {
+        en: fallback,
+        gloss: "【" + wordData.en + "】 → " + wordData.zh
+      };
+    }
+  }
   return {
-    en: "Here is a sentence containing the word '" + wordData.en + "'.",
-    gloss: "【" + wordData.en + "】 → " + wordData.zh
+    en: "Here is a short example sentence for practice.",
+    gloss: "【提示】词库例句暂不可用，已显示占位句。"
   };
 }
 

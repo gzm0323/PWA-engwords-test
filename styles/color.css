@@ -106,3 +106,13 @@ button:hover {
   background-color: var(--table-stripe);
   border: 1px solid var(--border-color);
 }
+
+#content.roots-page .roots-explain {
+  background-color: var(--table-stripe);
+  border: 1px solid var(--border-color);
+}
+
+#content.roots-page .roots-example-block {
+  background-color: var(--table-stripe);
+  border: 1px solid var(--border-color);
+}

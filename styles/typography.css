@@ -61,3 +61,43 @@ button {
   font-size: 1.1rem;
   line-height: 1.6;
 }
+
+#content.roots-page .roots-intro {
+  font-size: 1rem;
+}
+
+#content.roots-page .roots-progress {
+  font-size: 0.95rem;
+}
+
+#content.roots-page .roots-root-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+}
+
+#content.roots-page .roots-meta {
+  font-size: 1.05rem;
+}
+
+#content.roots-page .roots-explain {
+  font-size: 1.05rem;
+}
+
+#content.roots-page .roots-example-word .roots-en {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+#content.roots-page .roots-example-word .roots-gloss {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+#content.roots-page .roots-example-sentence {
+  font-size: 1.08rem;
+  font-weight: 500;
+}
+
+#content.roots-page .roots-example-zh {
+  font-size: 1.02rem;
+}
