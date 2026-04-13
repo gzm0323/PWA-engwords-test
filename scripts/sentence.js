@@ -157,24 +157,22 @@ async function fetchTranslation(text) {
 async function renderSentence() {
   setLoadingState(true);
   var data = await buildRandomSentence();
+  var zh = await fetchTranslation(data.en);
+
   $("#sentence-en").text(data.en);
   $("#sentence-gloss").text(data.gloss);
   $("#sentence-gloss").hide();
-  
-  $("#sentence-translation").text("正在翻译...");
+
+  $("#sentence-translation").text("【翻译】" + zh);
   $("#sentence-translation").hide();
 
   $("#btn-toggle-gloss info").attr("text", "no");
   $("#btn-toggle-gloss info").text("单词释义");
-  
+
   $("#btn-toggle-translation info").attr("text", "no");
   $("#btn-toggle-translation info").text("句子翻译");
 
   setLoadingState(false);
-  
-  fetchTranslation(data.en).then(zh => {
-    $("#sentence-translation").text("【翻译】" + zh);
-  });
 }
 
 function toggleGloss() {
