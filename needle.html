@@ -23,6 +23,7 @@
     <script src="scripts/jquery-1.11.3.js" defer></script>
     <script src="./words_f.txt" defer></script>
     <script src="scripts/word_policy.js" defer></script>
+    <script src="scripts/quiz_storage.js" defer></script>
     <script src="scripts/status.js" defer></script>
     <script src="scripts/hard_words.js" defer></script>
     <script src="scripts/needle.js" defer></script>
@@ -61,7 +62,7 @@
         <strong id="needle-pool-size">500</strong>
         个<strong>较难实词</strong>（优先字母较多、含常见拉丁/希腊词缀如
         <span lang="en">-tion、-ology、dis-、inter-</span>
-        等），与通用题库区分，便于<strong>重点突破</strong>。请选择题型后随机出题。
+        等），与通用题库区分，便于<strong>重点突破</strong>；在主练界面答错的词条也会并入本题库。<span id="needle-wrong-note" lang="zh-CN"></span>请选择题型后随机出题。
       </p>
       <div class="needle-actions">
         <button id="btn-needle-ec" type="button" onclick="getNeedleEnglishWords();">

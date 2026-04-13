@@ -1,5 +1,5 @@
 /* eslint-disable */
-const CACHE_NAME = "engwords-pwa-v12";
+const CACHE_NAME = "engwords-pwa-v13";
 
 const PRECACHE_URLS = [
   "./",
@@ -21,6 +21,7 @@ const PRECACHE_URLS = [
   "./styles/color.css",
   "./scripts/jquery-1.11.3.js",
   "./scripts/word_policy.js",
+  "./scripts/quiz_storage.js",
   "./scripts/status.js",
   "./scripts/sentence.js",
   "./scripts/hard_words.js",

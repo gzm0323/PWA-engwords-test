@@ -108,4 +108,13 @@ $(function () {
   var n =
     typeof HARD_WORD_POOL_SIZE !== "undefined" ? HARD_WORD_POOL_SIZE : 0;
   $("#needle-pool-size").text(String(n));
+  var nw =
+    typeof QuizStorage !== "undefined" && QuizStorage.getWrongIndices
+      ? QuizStorage.getWrongIndices().length
+      : 0;
+  if (nw > 0) {
+    $("#needle-wrong-note").text("（当前含主练错题 " + nw + " 个）");
+  } else {
+    $("#needle-wrong-note").text("");
+  }
 });

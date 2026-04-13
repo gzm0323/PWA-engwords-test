@@ -20,6 +20,7 @@
   <script type="text/javascript" src="scripts/jquery-1.11.3.js"></script>
   <script type="text/javascript" src="./words_f.txt"></script>
   <script type="text/javascript" src="scripts/word_policy.js"></script>
+  <script type="text/javascript" src="scripts/quiz_storage.js"></script>
   <script type="text/javascript" src="scripts/status.js"></script>
   <script type="text/javascript" src="./pwa.js"></script>
 </head>
@@ -49,9 +50,12 @@
     </ul>
   </div>
   <div id="content">
+    <p class="quiz-hint">
+      在答题框内输入中文释义，点击「显示答案」可判分并对照标准答案；错题会自动加入「铁杵成针」练习范围。
+    </p>
     <button id="btn1" onclick="getEnglishWords();">随机出题</button>
     <button id="btn2" onclick="showAnswer('chinese');"><info text="no">显示答案</info></button>
-  <table>
+  <table id="words-table">
     </table>
   </div>
 </body>

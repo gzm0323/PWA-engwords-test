@@ -114,11 +114,40 @@
     return out;
   }
 
+  /** 合并主练错题索引（localStorage），不重复加入 */
+  function mergeUserWrongPool(base) {
+    var extra =
+      typeof global.QuizStorage !== "undefined" &&
+      global.QuizStorage.getWrongIndices
+        ? global.QuizStorage.getWrongIndices()
+        : [];
+    var seen = {};
+    var out = [];
+    var i;
+    var max = typeof words !== "undefined" ? words.length / 2 : 0;
+    for (i = 0; i < base.length; i++) {
+      seen[base[i]] = true;
+      out.push(base[i]);
+    }
+    for (i = 0; i < extra.length; i++) {
+      var ix = extra[i];
+      if (typeof ix !== "number" || ix < 0 || ix >= max) continue;
+      if (!seen[ix]) {
+        seen[ix] = true;
+        out.push(ix);
+      }
+    }
+    return out;
+  }
+
   global.HARD_WORD_INDICES = [];
+  global.HARD_WORD_BASE_COUNT = 0;
   global.HARD_WORD_POOL_SIZE = 0;
 
   function initHardPool() {
-    global.HARD_WORD_INDICES = buildHardWordIndices();
+    var base = buildHardWordIndices();
+    global.HARD_WORD_BASE_COUNT = base.length;
+    global.HARD_WORD_INDICES = mergeUserWrongPool(base);
     global.HARD_WORD_POOL_SIZE = global.HARD_WORD_INDICES.length;
   }
 

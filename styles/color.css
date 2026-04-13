@@ -102,6 +102,22 @@ button:hover {
   background-color: var(--primary-hover);
 }
 
+#content .quiz-input {
+  border: 1px solid var(--border-color);
+  font-family: inherit;
+  font-size: 1.05rem;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
+#content td.quiz-cell-correct {
+  background-color: rgba(56, 161, 105, 0.1);
+}
+
+#content td.quiz-cell-wrong {
+  background-color: rgba(229, 62, 62, 0.08);
+}
+
 #content.sentence-page .sentence-gloss {
   background-color: var(--table-stripe);
   border: 1px solid var(--border-color);

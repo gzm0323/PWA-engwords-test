@@ -101,6 +101,33 @@ button:active {
   overflow-wrap: break-word;
 }
 
+#content .quiz-hint {
+  margin-bottom: 16px;
+  line-height: 1.55;
+}
+
+#content td.quiz-prompt,
+#content td.quiz-answer-cell {
+  vertical-align: middle;
+}
+
+#content .quiz-input {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+}
+
+#content td.quiz-cell-correct {
+  box-shadow: inset 0 0 0 2px rgba(56, 161, 105, 0.35);
+}
+
+#content td.quiz-cell-wrong {
+  box-shadow: inset 0 0 0 2px rgba(229, 62, 62, 0.4);
+}
+
 #content td english, #content td chinese {
   display: inline-block;
   opacity: 0.9;

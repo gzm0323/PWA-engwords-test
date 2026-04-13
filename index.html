@@ -24,6 +24,7 @@
     <script src="scripts/jquery-1.11.3.js" defer></script>
     <script src="./words_f.txt" defer></script>
     <script src="scripts/word_policy.js" defer></script>
+    <script src="scripts/quiz_storage.js" defer></script>
     <script src="scripts/status.js" defer></script>
     <script src="./pwa.js" defer></script>
   </head>
@@ -55,6 +56,9 @@
     </div>
 
     <div id="content">
+      <p class="quiz-hint">
+        在答题框内输入中文释义，点击「显示答案」可判分并对照标准答案；错题会自动加入「铁杵成针」练习范围。
+      </p>
       <button id="btn1" type="button" onclick="getEnglishWords();">
         随机出题
       </button>
