@@ -57,12 +57,17 @@
     </div>
 
     <div id="content" class="needle-page">
+      <div class="user-login-bar" aria-label="用户登录">
+        <span class="user-login-current">当前用户：<strong id="current-user-name">guest</strong></span>
+        <input id="login-user-input" type="text" maxlength="32" placeholder="输入用户名后切换" />
+        <button id="btn-login-user" type="button">登录/切换</button>
+      </div>
       <p class="needle-intro">
         本模块从<strong>初中英语词汇</strong>全库中，按<strong>难度算法</strong>自动筛选约
         <strong id="needle-pool-size">500</strong>
         个<strong>较难实词</strong>（优先字母较多、含常见拉丁/希腊词缀如
         <span lang="en">-tion、-ology、dis-、inter-</span>
-        等），与通用题库区分，便于<strong>重点突破</strong>；在主练界面答错的词条也会并入本题库。<span id="needle-wrong-note" lang="zh-CN"></span>请选择题型后随机出题。
+        等），与通用题库区分，便于<strong>重点突破</strong>；你也可以在主练中手动加入难词到本题库。此页支持输入答案并点击「显示答案」仅查看标准答案，也可直接「移出难词库」。<span id="needle-wrong-note" lang="zh-CN"></span>请选择题型后随机出题。
       </p>
       <div class="needle-actions">
         <button id="btn-needle-ec" type="button" onclick="getNeedleEnglishWords();">
@@ -79,6 +84,8 @@
         >
           <info text="no">显示答案</info>
         </button>
+        <button type="button" id="btn-export-mastered">导出已掌握</button>
+        <button type="button" id="btn-export-needle">导出难词库</button>
       </div>
       <table id="words-table">
         <tbody></tbody>

@@ -114,12 +114,12 @@
     return out;
   }
 
-  /** 合并主练错题索引（localStorage），不重复加入 */
-  function mergeUserWrongPool(base) {
+  /** 合并用户手动标注的难词索引（localStorage），不重复加入 */
+  function mergeUserNeedlePool(base) {
     var extra =
       typeof global.QuizStorage !== "undefined" &&
-      global.QuizStorage.getWrongIndices
-        ? global.QuizStorage.getWrongIndices()
+      global.QuizStorage.getNeedleIndices
+        ? global.QuizStorage.getNeedleIndices()
         : [];
     var seen = {};
     var out = [];
@@ -147,7 +147,7 @@
   function initHardPool() {
     var base = buildHardWordIndices();
     global.HARD_WORD_BASE_COUNT = base.length;
-    global.HARD_WORD_INDICES = mergeUserWrongPool(base);
+    global.HARD_WORD_INDICES = mergeUserNeedlePool(base);
     global.HARD_WORD_POOL_SIZE = global.HARD_WORD_INDICES.length;
   }
 

@@ -111,6 +111,42 @@ button:active {
   vertical-align: middle;
 }
 
+#content td.quiz-prompt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+}
+
+#content .quiz-prompt-text {
+  flex: 1 1 140px;
+  min-width: 0;
+}
+
+#content .quiz-prompt-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+#content .quiz-master-btn {
+  flex: 0 0 auto;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+#content .quiz-needle-btn {
+  flex: 0 0 auto;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
 #content .quiz-input {
   width: 100%;
   max-width: 100%;
@@ -118,6 +154,26 @@ button:active {
   padding: 10px 12px;
   border-radius: 8px;
   margin-bottom: 6px;
+}
+
+#content .user-login-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+#content .user-login-current {
+  margin-right: 6px;
+}
+
+#content #login-user-input {
+  min-width: 180px;
+  max-width: 260px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
 }
 
 #content td.quiz-cell-correct {

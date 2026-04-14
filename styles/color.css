@@ -110,6 +110,44 @@ button:hover {
   color: var(--text-main);
 }
 
+#content .quiz-master-btn {
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px solid var(--border-color);
+}
+#content .quiz-master-btn:hover:not(:disabled) {
+  background-color: var(--nav-active-bg);
+  color: var(--primary-hover);
+}
+#content .quiz-master-btn:disabled {
+  opacity: 0.75;
+  cursor: default;
+}
+
+#content .quiz-master-btn-cancel {
+  border-color: var(--primary);
+}
+
+#content .quiz-needle-btn {
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px dashed var(--border-color);
+}
+
+#content .quiz-needle-btn:hover {
+  background-color: var(--nav-active-bg);
+}
+
+#content .quiz-needle-btn-cancel {
+  border-style: solid;
+  border-color: var(--primary);
+}
+
+#content #login-user-input {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+}
+
 #content td.quiz-cell-correct {
   background-color: rgba(56, 161, 105, 0.1);
 }

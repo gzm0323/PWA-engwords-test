@@ -50,11 +50,18 @@
     </ul>
   </div>
   <div id="content">
+    <div class="user-login-bar" aria-label="用户登录">
+      <span class="user-login-current">当前用户：<strong id="current-user-name">guest</strong></span>
+      <input id="login-user-input" type="text" maxlength="32" placeholder="输入用户名后切换" />
+      <button id="btn-login-user" type="button">登录/切换</button>
+    </div>
     <p class="quiz-hint">
-      在答题框内输入中文释义，点击「显示答案」可判分并对照标准答案；错题会自动加入「铁杵成针」练习范围。
+      在答题框内输入中文释义，点击「显示答案」仅显示标准答案（不自动判对错）；请自行点击「加入难词库 / 移出难词库」管理“铁杵成针”词库。已完全掌握的词可点「已掌握」排除随机出题；可随时「取消已掌握」恢复。
     </p>
     <button id="btn1" onclick="getEnglishWords();">随机出题</button>
     <button id="btn2" onclick="showAnswer('chinese');"><info text="no">显示答案</info></button>
+    <button type="button" id="btn-export-mastered">导出已掌握</button>
+    <button type="button" id="btn-export-needle">导出难词库</button>
   <table id="words-table">
     </table>
   </div>
