@@ -56,6 +56,10 @@
     </div>
 
     <div id="content" class="quiz-main-page">
+      <div class="quiz-export-corner">
+        <button type="button" id="btn-export-mastered">导出已掌握</button>
+        <button type="button" id="btn-export-needle">导出难词库</button>
+      </div>
       <div class="quiz-main-actions">
         <button id="btn1" type="button" onclick="getEnglishWords();">
           随机出题
@@ -76,10 +80,6 @@
         <span><i class="light-dot light-red"></i>红灯：难词库</span>
         <span><i class="light-dot light-green"></i>绿灯：已掌握</span>
         <span><i class="light-dot light-yellow"></i>黄灯：已标记，再点取消</span>
-      </div>
-      <div class="quiz-export-corner">
-        <button type="button" id="btn-export-mastered">导出已掌握</button>
-        <button type="button" id="btn-export-needle">导出难词库</button>
       </div>
       <table id="words-table">
         <tbody></tbody>
