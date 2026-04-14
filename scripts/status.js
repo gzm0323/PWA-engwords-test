@@ -25,7 +25,7 @@ function resetAnswerUI(tagName) {
 }
 
 function showQuizHint() {
-  $("#content .quiz-hint").stop(true, true).slideDown(120);
+  $("#content .quiz-hint, #content .quiz-light-legend").stop(true, true).slideDown(120);
 }
 
 /** 未掌握词条不足时不再按「已掌握」过滤，避免题库被抽空。 */
