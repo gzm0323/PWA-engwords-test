@@ -159,27 +159,6 @@ button:active {
   margin-bottom: 6px;
 }
 
-#content .user-login-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  margin: 6px 0 12px;
-}
-
-#content .account-strip {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 6px;
-}
-
-#content .user-login-current {
-  margin-right: 6px;
-}
-
 #content .quiz-export-corner {
   display: flex;
   justify-content: flex-end;
@@ -229,13 +208,22 @@ button:active {
   display: inline-block;
 }
 
-#content #login-user-input,
-#content #login-pin-input {
-  min-width: 180px;
-  max-width: 260px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
+.app-toast {
+  position: fixed;
+  right: 16px;
+  top: 16px;
+  z-index: 2000;
+  padding: 10px 14px;
+  border-radius: 10px;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.app-toast.toast-show {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 #content td.quiz-cell-correct {

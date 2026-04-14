@@ -178,31 +178,22 @@ button:hover {
   background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
 }
 
-#content #login-user-input,
-#content #login-pin-input {
-  background-color: var(--bg-main);
-  color: var(--text-main);
+.app-toast {
+  color: #fff;
+  background-color: #4a5568;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
-#content #btn-reset-user {
+.app-toast.toast-success {
+  background-color: #2f855a;
+}
+
+.app-toast.toast-error {
   background-color: #c53030;
 }
 
-#content #btn-reset-user:hover {
-  background-color: #9b2c2c;
-}
-
-#content #btn-account-toggle {
-  background-color: transparent;
-  color: var(--primary);
-  border: 1px solid var(--border-color);
-  box-shadow: none;
-  padding: 7px 12px;
-}
-
-#content #btn-account-toggle:hover {
-  background-color: var(--nav-active-bg);
-  color: var(--primary-hover);
+.app-toast.toast-info {
+  background-color: #4a5568;
 }
 
 #content td.quiz-cell-correct {

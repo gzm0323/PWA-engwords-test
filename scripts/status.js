@@ -243,11 +243,7 @@ function exportMasteredListDownload() {
   var url = URL.createObjectURL(blob);
   var a = document.createElement("a");
   a.href = url;
-  var user =
-    typeof QuizStorage !== "undefined" && QuizStorage.getActiveUser
-      ? QuizStorage.getActiveUser()
-      : "guest";
-  a.download = "engwords-mastered-" + user + ".csv";
+  a.download = "engwords-mastered.csv";
   a.rel = "noopener";
   document.body.appendChild(a);
   a.click();
@@ -269,11 +265,7 @@ function exportNeedleListDownload() {
   var url = URL.createObjectURL(blob);
   var a = document.createElement("a");
   a.href = url;
-  var user =
-    typeof QuizStorage !== "undefined" && QuizStorage.getActiveUser
-      ? QuizStorage.getActiveUser()
-      : "guest";
-  a.download = "engwords-needle-" + user + ".csv";
+  a.download = "engwords-needle.csv";
   a.rel = "noopener";
   document.body.appendChild(a);
   a.click();
@@ -281,115 +273,27 @@ function exportNeedleListDownload() {
   URL.revokeObjectURL(url);
 }
 
-function refreshActiveUserLabel() {
-  var name = "guest";
-  var unlocked = false;
-  if (typeof QuizStorage !== "undefined" && QuizStorage.getActiveUser) {
-    name = QuizStorage.getActiveUser();
+var TOAST_TIMER = null;
+function showToast(msg, kind) {
+  var $t = $("#app-toast");
+  if ($t.length === 0) {
+    $("body").append('<div id="app-toast" class="app-toast" aria-live="polite"></div>');
+    $t = $("#app-toast");
   }
-  if (typeof QuizStorage !== "undefined" && QuizStorage.isUnlocked) {
-    unlocked = QuizStorage.isUnlocked();
+  $t.removeClass("toast-success toast-error toast-info toast-show");
+  $t.addClass("toast-show");
+  $t.addClass(kind ? "toast-" + kind : "toast-info");
+  $t.text(msg);
+  if (TOAST_TIMER) {
+    clearTimeout(TOAST_TIMER);
   }
-  $("#current-user-name").text(name + (unlocked ? "（已解锁）" : "（未解锁）"));
-  $("#login-user-input").attr("placeholder", "用户名（当前：" + name + "）");
-  $("#login-pin-input").attr("placeholder", unlocked ? "已解锁，可重新输入PIN切换" : "请输入PIN");
-  $("#btn-reset-user").attr("title", "忘记PIN时可重置该用户（会清空该用户记录）");
-}
-
-function ensureUnlockedOrWarn() {
-  if (
-    typeof QuizStorage === "undefined" ||
-    !QuizStorage.isUnlocked ||
-    !QuizStorage.isUnlocked()
-  ) {
-    alert("请先输入用户名和PIN登录后，再保存学习记录。");
-    return false;
-  }
-  return true;
+  TOAST_TIMER = setTimeout(function () {
+    $t.removeClass("toast-show");
+  }, 1700);
 }
 
 $(function () {
-  refreshActiveUserLabel();
-
-  $(document).on("click", "#btn-account-toggle", function () {
-    var $btn = $(this);
-    var $panel = $("#account-panel-body");
-    if ($panel.length === 0) return;
-    var opening = $panel.prop("hidden");
-    $panel.prop("hidden", !opening);
-    $btn.attr("aria-expanded", opening ? "true" : "false");
-    $btn.text(opening ? "收起设置" : "账户设置");
-  });
-
-  $(document).on("click", "#btn-login-user", function () {
-    if (typeof QuizStorage === "undefined" || !QuizStorage.loginUser) return;
-    var raw = $("#login-user-input").val();
-    var pin = $("#login-pin-input").val();
-    QuizStorage.loginUser(raw, pin)
-      .then(function (name) {
-        $("#login-user-input").val("");
-        $("#login-pin-input").val("");
-        refreshActiveUserLabel();
-        $("#account-panel-body").prop("hidden", true);
-        $("#btn-account-toggle").attr("aria-expanded", "false").text("账户设置");
-        alert("登录成功：" + name);
-      })
-      .catch(function (err) {
-        if (err && err.message === "PIN_TOO_SHORT") {
-          alert("PIN至少需要4位。");
-          return;
-        }
-        if (err && err.message === "PIN_INVALID") {
-          alert("PIN错误，无法解锁该用户数据。");
-          return;
-        }
-        alert("登录失败，请重试。");
-      });
-  });
-
-  $(document).on("keydown", "#login-user-input, #login-pin-input", function (e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      $("#btn-login-user").trigger("click");
-    }
-  });
-
-  $(document).on("click", "#btn-logout-user", function () {
-    if (typeof QuizStorage === "undefined" || !QuizStorage.logoutUser) return;
-    QuizStorage.logoutUser();
-    refreshActiveUserLabel();
-  });
-
-  $(document).on("click", "#btn-reset-user", function () {
-    if (typeof QuizStorage === "undefined" || !QuizStorage.resetUserData) return;
-    var raw = $("#login-user-input").val();
-    var user = String(raw == null ? "" : raw).replace(/\s+/g, " ").trim();
-    if (!user) {
-      user = QuizStorage.getActiveUser ? QuizStorage.getActiveUser() : "";
-    }
-    if (!user) {
-      alert("请先输入要重置的用户名。");
-      return;
-    }
-    var yes = confirm(
-      "将重置用户“" +
-        user +
-        "”的PIN与学习数据（已掌握/难词库）。此操作不可恢复，是否继续？"
-    );
-    if (!yes) return;
-    var ok = QuizStorage.resetUserData(user);
-    if (!ok) {
-      alert("未找到该用户名的加密记录。");
-      return;
-    }
-    $("#login-user-input").val(user);
-    $("#login-pin-input").val("");
-    refreshActiveUserLabel();
-    alert("已重置用户“" + user + "”。请使用新PIN重新登录。");
-  });
-
   $(document).on("click", ".quiz-needle-btn", function () {
-    if (!ensureUnlockedOrWarn()) return;
     var $btn = $(this);
     var ix = parseInt($btn.attr("data-word-index"), 10);
     if (isNaN(ix)) return;
@@ -401,6 +305,7 @@ $(function () {
         .removeClass("quiz-needle-btn-cancel")
         .attr("aria-label", "加入难词库（红灯）")
         .attr("title", "加入难词库（红灯）");
+      showToast("已移出难词库。", "info");
     } else {
       if (!QuizStorage.addNeedleIndex) return;
       QuizStorage.addNeedleIndex(ix);
@@ -408,11 +313,11 @@ $(function () {
         .addClass("quiz-needle-btn-cancel")
         .attr("aria-label", "已加入难词库（再次点击移出）")
         .attr("title", "已加入难词库（再次点击移出）");
+      showToast("已加入难词库。", "success");
     }
   });
 
   $(document).on("click", ".quiz-master-btn", function () {
-    if (!ensureUnlockedOrWarn()) return;
     var $btn = $(this);
     var ix = parseInt($btn.attr("data-word-index"), 10);
     if (isNaN(ix)) return;
@@ -425,6 +330,7 @@ $(function () {
         .removeClass("quiz-master-btn-cancel")
         .attr("aria-label", "标记已掌握（绿灯）")
         .attr("title", "标记已掌握（绿灯）");
+      showToast("已取消掌握标记。", "info");
     } else {
       if (!QuizStorage.addMasteredIndex) return;
       QuizStorage.addMasteredIndex(ix);
@@ -432,16 +338,15 @@ $(function () {
         .addClass("quiz-master-btn-cancel")
         .attr("aria-label", "已掌握（再次点击取消）")
         .attr("title", "已掌握（再次点击取消）");
+      showToast("单词已掌握。", "success");
     }
   });
 
   $(document).on("click", "#btn-export-mastered", function () {
-    if (!ensureUnlockedOrWarn()) return;
     exportMasteredListDownload();
   });
 
   $(document).on("click", "#btn-export-needle", function () {
-    if (!ensureUnlockedOrWarn()) return;
     exportNeedleListDownload();
   });
 });
