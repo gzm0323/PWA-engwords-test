@@ -49,19 +49,36 @@
       </li>
     </ul>
   </div>
-  <div id="content">
-    <div class="user-login-bar" aria-label="用户登录">
+  <div id="content" class="quiz-main-page">
+    <div class="account-strip" aria-label="账户设置">
       <span class="user-login-current">当前用户：<strong id="current-user-name">guest</strong></span>
-      <input id="login-user-input" type="text" maxlength="32" placeholder="输入用户名后切换" />
+      <button id="btn-account-toggle" type="button" aria-expanded="false" aria-controls="account-panel-body">
+        账户设置
+      </button>
+    </div>
+    <div id="account-panel-body" class="user-login-bar" hidden>
+      <input id="login-user-input" type="text" maxlength="32" placeholder="输入用户名" />
+      <input id="login-pin-input" type="password" maxlength="32" placeholder="输入PIN（至少4位）" />
       <button id="btn-login-user" type="button">登录/切换</button>
+      <button id="btn-logout-user" type="button">登出锁定</button>
+      <button id="btn-reset-user" type="button">忘记PIN重置</button>
     </div>
     <p class="quiz-hint">
-      在答题框内输入英文，点击「显示答案」仅显示标准答案（不自动判对错）；请自行点击「加入难词库 / 移出难词库」管理“铁杵成针”词库。已完全掌握的词可点「已掌握」排除随机出题；可随时「取消已掌握」恢复。
+      可在答题框内输入答案，点击「显示答案」可查看参考答案，点击红灯将单词加入难词库，增加单词的练习频率，点击绿灯表示单词已完全掌握，无需再随机出题，再次点击取消操作。
     </p>
-    <button id="btn1" onclick="getChineseWords();">随机出题</button>
-    <button id="btn2" onclick="showAnswer('english');"><info text="no">显示答案</info></button>
-    <button type="button" id="btn-export-mastered">导出已掌握</button>
-    <button type="button" id="btn-export-needle">导出难词库</button>
+    <div class="quiz-export-corner">
+      <button type="button" id="btn-export-mastered">导出已掌握</button>
+      <button type="button" id="btn-export-needle">导出难词库</button>
+    </div>
+    <div class="quiz-main-actions">
+      <button id="btn1" onclick="getChineseWords();">随机出题</button>
+      <button id="btn2" onclick="showAnswer('english');"><info text="no">显示答案</info></button>
+    </div>
+    <div class="quiz-light-legend" aria-label="标记说明">
+      <span><i class="light-dot light-red"></i>红灯：难词库</span>
+      <span><i class="light-dot light-green"></i>绿灯：已掌握</span>
+      <span><i class="light-dot light-yellow"></i>黄灯：已标记，再点取消</span>
+    </div>
   <table id="words-table">
     </table>
   </div>

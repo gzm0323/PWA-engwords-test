@@ -1,14 +1,25 @@
 /**
- * 按用户保存练习状态（本地 localStorage）：
+ * 本地加密的多用户学习状态（用户名 + PIN）：
  * - 难词池（铁杵成针手动加入）
  * - 已掌握池（主练可排除）
- * - 当前登录用户
+ * - 数据加密存储在 localStorage
  */
 (function (global) {
   var KEY_ACTIVE_USER = "engwords_active_user";
   var KEY_USERS = "engwords_users";
+  var KEY_USER_AUTH = "engwords_user_auth";
   var KEY_NEEDLE = "engwords_needle_indices";
   var KEY_MASTERED = "engwords_mastered_indices";
+  var VERIFIER_TEXT = "engwords-pin-ok";
+  var PBKDF2_ITERS = 120000;
+
+  var state = {
+    activeUser: "guest",
+    unlocked: false,
+    key: null,
+    needle: [],
+    mastered: [],
+  };
 
   function normalizeUserName(name) {
     var s = String(name == null ? "" : name).replace(/\s+/g, " ").trim();
@@ -17,44 +28,26 @@
     return s;
   }
 
-  function getActiveUser() {
-    try {
-      var s = localStorage.getItem(KEY_ACTIVE_USER);
-      return normalizeUserName(s || "guest");
-    } catch (e) {
-      return "guest";
+  function normalizePin(pin) {
+    return String(pin == null ? "").trim();
+  }
+
+  function toB64(bytes) {
+    var bin = "";
+    for (var i = 0; i < bytes.length; i++) {
+      bin += String.fromCharCode(bytes[i]);
     }
+    return btoa(bin);
   }
 
-  function getScopedKey(base) {
-    return base + "::" + getActiveUser();
-  }
-
-  function readArray(base) {
-    try {
-      var scoped = localStorage.getItem(getScopedKey(base));
-      if (!scoped) {
-        // 兼容历史单用户数据：仅在 guest 下兜底读取。
-        if (getActiveUser() === "guest") {
-          var legacy = localStorage.getItem(base);
-          if (legacy) {
-            var oldArr = JSON.parse(legacy);
-            if (Array.isArray(oldArr)) return oldArr;
-          }
-        }
-        return [];
-      }
-      var arr = JSON.parse(scoped);
-      return Array.isArray(arr) ? arr : [];
-    } catch (e) {
-      return [];
+  function fromB64(str) {
+    if (!str) return new Uint8Array(0);
+    var bin = atob(str);
+    var out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) {
+      out[i] = bin.charCodeAt(i);
     }
-  }
-
-  function writeArray(base, arr) {
-    try {
-      localStorage.setItem(getScopedKey(base), JSON.stringify(arr));
-    } catch (e) {}
+    return out;
   }
 
   function getUsers() {
@@ -70,35 +63,229 @@
     }
   }
 
+  function saveUsers(users) {
+    try {
+      localStorage.setItem(KEY_USERS, JSON.stringify(users));
+    } catch (e) {}
+  }
+
   function ensureUserExists(name) {
-    var u = normalizeUserName(name);
     var users = getUsers();
-    var seen = false;
     for (var i = 0; i < users.length; i++) {
-      if (users[i] === u) {
-        seen = true;
-        break;
-      }
+      if (users[i] === name) return;
     }
-    if (!seen) {
-      users.push(u);
-      try {
-        localStorage.setItem(KEY_USERS, JSON.stringify(users));
-      } catch (e) {}
+    users.push(name);
+    saveUsers(users);
+  }
+
+  function removeUserFromList(name) {
+    var users = getUsers().filter(function (u) {
+      return u !== name;
+    });
+    if (users.length === 0) {
+      users = ["guest"];
+    }
+    saveUsers(users);
+  }
+
+  function getUserAuthMap() {
+    try {
+      var s = localStorage.getItem(KEY_USER_AUTH);
+      var obj = s ? JSON.parse(s) : {};
+      return obj && typeof obj === "object" ? obj : {};
+    } catch (e) {
+      return {};
     }
   }
 
-  function setActiveUser(name) {
-    var u = normalizeUserName(name);
-    ensureUserExists(u);
+  function saveUserAuthMap(map) {
     try {
-      localStorage.setItem(KEY_ACTIVE_USER, u);
+      localStorage.setItem(KEY_USER_AUTH, JSON.stringify(map));
     } catch (e) {}
-    return u;
+  }
+
+  function getScopedKey(base, user) {
+    return base + "::" + user;
+  }
+
+  function getActiveUser() {
+    try {
+      var s = localStorage.getItem(KEY_ACTIVE_USER);
+      return normalizeUserName(s || state.activeUser || "guest");
+    } catch (e) {
+      return state.activeUser || "guest";
+    }
+  }
+
+  function setActiveUserLocal(name) {
+    state.activeUser = name;
+    try {
+      localStorage.setItem(KEY_ACTIVE_USER, name);
+    } catch (e) {}
+  }
+
+  async function deriveAesKey(pin, saltB64) {
+    var enc = new TextEncoder();
+    var keyMaterial = await crypto.subtle.importKey(
+      "raw",
+      enc.encode(pin),
+      "PBKDF2",
+      false,
+      ["deriveKey"]
+    );
+    return crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2",
+        salt: fromB64(saltB64),
+        iterations: PBKDF2_ITERS,
+        hash: "SHA-256",
+      },
+      keyMaterial,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["encrypt", "decrypt"]
+    );
+  }
+
+  async function encryptJson(key, obj) {
+    var iv = crypto.getRandomValues(new Uint8Array(12));
+    var plain = new TextEncoder().encode(JSON.stringify(obj));
+    var cipher = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, plain);
+    return {
+      iv: toB64(iv),
+      data: toB64(new Uint8Array(cipher)),
+    };
+  }
+
+  async function decryptJson(key, payload, fallback) {
+    if (!payload || !payload.iv || !payload.data) return fallback;
+    var dec = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: fromB64(payload.iv) },
+      key,
+      fromB64(payload.data)
+    );
+    var txt = new TextDecoder().decode(dec);
+    return JSON.parse(txt);
+  }
+
+  function readEncryptedPayload(base, user) {
+    try {
+      var s = localStorage.getItem(getScopedKey(base, user));
+      if (!s) return null;
+      var p = JSON.parse(s);
+      return p && typeof p === "object" ? p : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function writeEncryptedPayload(base, user, payload) {
+    try {
+      localStorage.setItem(getScopedKey(base, user), JSON.stringify(payload));
+    } catch (e) {}
+  }
+
+  async function saveStateArrays() {
+    if (!state.unlocked || !state.key) return;
+    try {
+      var needlePayload = await encryptJson(state.key, state.needle);
+      writeEncryptedPayload(KEY_NEEDLE, state.activeUser, needlePayload);
+      var masteredPayload = await encryptJson(state.key, state.mastered);
+      writeEncryptedPayload(KEY_MASTERED, state.activeUser, masteredPayload);
+    } catch (e) {}
+  }
+
+  async function initNewUser(user, pin) {
+    var salt = toB64(crypto.getRandomValues(new Uint8Array(16)));
+    var key = await deriveAesKey(pin, salt);
+    var verifierPayload = await encryptJson(key, { v: VERIFIER_TEXT });
+
+    var auth = getUserAuthMap();
+    auth[user] = { salt: salt, verifier: verifierPayload };
+    saveUserAuthMap(auth);
+
+    state.activeUser = user;
+    state.key = key;
+    state.unlocked = true;
+    state.needle = [];
+    state.mastered = [];
+
+    await saveStateArrays();
+    setActiveUserLocal(user);
+    ensureUserExists(user);
+  }
+
+  async function loadExistingUser(user, pin, authInfo) {
+    var key = await deriveAesKey(pin, authInfo.salt);
+    var verifier = await decryptJson(key, authInfo.verifier, null);
+    if (!verifier || verifier.v !== VERIFIER_TEXT) {
+      throw new Error("PIN_INVALID");
+    }
+
+    var needlePayload = readEncryptedPayload(KEY_NEEDLE, user);
+    var masteredPayload = readEncryptedPayload(KEY_MASTERED, user);
+    var needle = await decryptJson(key, needlePayload, []);
+    var mastered = await decryptJson(key, masteredPayload, []);
+
+    state.activeUser = user;
+    state.key = key;
+    state.unlocked = true;
+    state.needle = Array.isArray(needle) ? needle : [];
+    state.mastered = Array.isArray(mastered) ? mastered : [];
+    setActiveUserLocal(user);
+    ensureUserExists(user);
+  }
+
+  async function loginUser(name, pin) {
+    var user = normalizeUserName(name);
+    var userPin = normalizePin(pin);
+    if (!userPin || userPin.length < 4) {
+      throw new Error("PIN_TOO_SHORT");
+    }
+    var auth = getUserAuthMap();
+    var info = auth[user];
+    if (!info) {
+      await initNewUser(user, userPin);
+    } else {
+      await loadExistingUser(user, userPin, info);
+    }
+    return user;
+  }
+
+  function logoutUser() {
+    state.unlocked = false;
+    state.key = null;
+    state.needle = [];
+    state.mastered = [];
+  }
+
+  function resetUserData(name) {
+    var user = normalizeUserName(name);
+    var auth = getUserAuthMap();
+    var existed = !!auth[user];
+    if (!existed) {
+      return false;
+    }
+    delete auth[user];
+    saveUserAuthMap(auth);
+    try {
+      localStorage.removeItem(getScopedKey(KEY_NEEDLE, user));
+      localStorage.removeItem(getScopedKey(KEY_MASTERED, user));
+    } catch (e) {}
+    removeUserFromList(user);
+    if (state.activeUser === user) {
+      logoutUser();
+      setActiveUserLocal("guest");
+    }
+    return true;
+  }
+
+  function isUnlocked() {
+    return state.unlocked;
   }
 
   function getNeedleIndices() {
-    return readArray(KEY_NEEDLE);
+    return state.unlocked ? state.needle.slice() : [];
   }
 
   function getWrongIndices() {
@@ -107,12 +294,12 @@
   }
 
   function getMasteredIndices() {
-    return readArray(KEY_MASTERED);
+    return state.unlocked ? state.mastered.slice() : [];
   }
 
   function addNeedleIndex(ix) {
-    if (typeof ix !== "number" || ix < 0) return;
-    var cur = getNeedleIndices();
+    if (!state.unlocked || typeof ix !== "number" || ix < 0) return;
+    var cur = state.needle.slice();
     var seen = {};
     var i;
     for (i = 0; i < cur.length; i++) {
@@ -120,15 +307,16 @@
     }
     if (seen[ix]) return;
     cur.push(ix);
-    writeArray(KEY_NEEDLE, cur);
+    state.needle = cur;
+    saveStateArrays();
   }
 
   function removeNeedleIndex(ix) {
-    if (typeof ix !== "number" || ix < 0) return;
-    var cur = getNeedleIndices().filter(function (i) {
+    if (!state.unlocked || typeof ix !== "number" || ix < 0) return;
+    state.needle = state.needle.filter(function (i) {
       return i !== ix;
     });
-    writeArray(KEY_NEEDLE, cur);
+    saveStateArrays();
   }
 
   function addWrongIndices(indices) {
@@ -140,9 +328,9 @@
   }
 
   function addMasteredIndex(ix) {
-    if (typeof ix !== "number" || ix < 0) return;
+    if (!state.unlocked || typeof ix !== "number" || ix < 0) return;
     removeNeedleIndex(ix);
-    var cur = getMasteredIndices();
+    var cur = state.mastered.slice();
     var seen = {};
     var i;
     for (i = 0; i < cur.length; i++) {
@@ -150,15 +338,16 @@
     }
     if (seen[ix]) return;
     cur.push(ix);
-    writeArray(KEY_MASTERED, cur);
+    state.mastered = cur;
+    saveStateArrays();
   }
 
   function removeMasteredIndex(ix) {
-    if (typeof ix !== "number" || ix < 0) return;
-    var cur = getMasteredIndices().filter(function (i) {
+    if (!state.unlocked || typeof ix !== "number" || ix < 0) return;
+    state.mastered = state.mastered.filter(function (i) {
       return i !== ix;
     });
-    writeArray(KEY_MASTERED, cur);
+    saveStateArrays();
   }
 
   function escapeCsvField(s) {
@@ -252,8 +441,11 @@
   }
 
   global.QuizStorage = {
+    isUnlocked: isUnlocked,
     getActiveUser: getActiveUser,
-    setActiveUser: setActiveUser,
+    loginUser: loginUser,
+    logoutUser: logoutUser,
+    resetUserData: resetUserData,
     getUsers: getUsers,
     getNeedleIndices: getNeedleIndices,
     addNeedleIndex: addNeedleIndex,

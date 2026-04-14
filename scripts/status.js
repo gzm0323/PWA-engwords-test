@@ -53,30 +53,30 @@ function isNeedleIndex(ix) {
 function buildMasterButton(k) {
   if (isMasteredIndex(k)) {
     return (
-      '<button type="button" class="quiz-master-btn quiz-master-btn-cancel" data-word-index="' +
+      '<button type="button" class="quiz-master-btn quiz-light-btn quiz-master-btn-cancel" data-word-index="' +
       k +
-      '" aria-label="取消已掌握，该词将重新参与随机出题">取消已掌握</button>'
+      '" title="已掌握（再次点击取消）" aria-label="已掌握（再次点击取消）"></button>'
     );
   }
   return (
-    '<button type="button" class="quiz-master-btn" data-word-index="' +
+    '<button type="button" class="quiz-master-btn quiz-light-btn" data-word-index="' +
     k +
-    '" aria-label="标记为已掌握，主练与铁杵成针中不再随机出现">已掌握</button>'
+    '" title="标记已掌握（绿灯）" aria-label="标记已掌握（绿灯）"></button>'
   );
 }
 
 function buildNeedleButton(k) {
   if (isNeedleIndex(k)) {
     return (
-      '<button type="button" class="quiz-needle-btn quiz-needle-btn-cancel" data-word-index="' +
+      '<button type="button" class="quiz-needle-btn quiz-light-btn quiz-needle-btn-cancel" data-word-index="' +
       k +
-      '" aria-label="从铁杵成针难词库移出">移出难词库</button>'
+      '" title="已加入难词库（再次点击移出）" aria-label="已加入难词库（再次点击移出）"></button>'
     );
   }
   return (
-    '<button type="button" class="quiz-needle-btn" data-word-index="' +
+    '<button type="button" class="quiz-needle-btn quiz-light-btn" data-word-index="' +
     k +
-    '" aria-label="加入铁杵成针难词库">加入难词库</button>'
+    '" title="加入难词库（红灯）" aria-label="加入难词库（红灯）"></button>'
   );
 }
 
@@ -283,34 +283,113 @@ function exportNeedleListDownload() {
 
 function refreshActiveUserLabel() {
   var name = "guest";
+  var unlocked = false;
   if (typeof QuizStorage !== "undefined" && QuizStorage.getActiveUser) {
     name = QuizStorage.getActiveUser();
   }
-  $("#current-user-name").text(name);
-  $("#login-user-input").attr("placeholder", "当前用户：" + name);
+  if (typeof QuizStorage !== "undefined" && QuizStorage.isUnlocked) {
+    unlocked = QuizStorage.isUnlocked();
+  }
+  $("#current-user-name").text(name + (unlocked ? "（已解锁）" : "（未解锁）"));
+  $("#login-user-input").attr("placeholder", "用户名（当前：" + name + "）");
+  $("#login-pin-input").attr("placeholder", unlocked ? "已解锁，可重新输入PIN切换" : "请输入PIN");
+  $("#btn-reset-user").attr("title", "忘记PIN时可重置该用户（会清空该用户记录）");
+}
+
+function ensureUnlockedOrWarn() {
+  if (
+    typeof QuizStorage === "undefined" ||
+    !QuizStorage.isUnlocked ||
+    !QuizStorage.isUnlocked()
+  ) {
+    alert("请先输入用户名和PIN登录后，再保存学习记录。");
+    return false;
+  }
+  return true;
 }
 
 $(function () {
   refreshActiveUserLabel();
 
-  $(document).on("click", "#btn-login-user", function () {
-    if (typeof QuizStorage === "undefined" || !QuizStorage.setActiveUser) return;
-    var raw = $("#login-user-input").val();
-    var name = QuizStorage.setActiveUser(raw);
-    $("#login-user-input").val("");
-    $("#current-user-name").text(name);
-    // 切换用户后刷新，确保题池和标记同步到当前用户。
-    window.location.reload();
+  $(document).on("click", "#btn-account-toggle", function () {
+    var $btn = $(this);
+    var $panel = $("#account-panel-body");
+    if ($panel.length === 0) return;
+    var opening = $panel.prop("hidden");
+    $panel.prop("hidden", !opening);
+    $btn.attr("aria-expanded", opening ? "true" : "false");
+    $btn.text(opening ? "收起设置" : "账户设置");
   });
 
-  $(document).on("keydown", "#login-user-input", function (e) {
+  $(document).on("click", "#btn-login-user", function () {
+    if (typeof QuizStorage === "undefined" || !QuizStorage.loginUser) return;
+    var raw = $("#login-user-input").val();
+    var pin = $("#login-pin-input").val();
+    QuizStorage.loginUser(raw, pin)
+      .then(function (name) {
+        $("#login-user-input").val("");
+        $("#login-pin-input").val("");
+        refreshActiveUserLabel();
+        $("#account-panel-body").prop("hidden", true);
+        $("#btn-account-toggle").attr("aria-expanded", "false").text("账户设置");
+        alert("登录成功：" + name);
+      })
+      .catch(function (err) {
+        if (err && err.message === "PIN_TOO_SHORT") {
+          alert("PIN至少需要4位。");
+          return;
+        }
+        if (err && err.message === "PIN_INVALID") {
+          alert("PIN错误，无法解锁该用户数据。");
+          return;
+        }
+        alert("登录失败，请重试。");
+      });
+  });
+
+  $(document).on("keydown", "#login-user-input, #login-pin-input", function (e) {
     if (e.key === "Enter") {
       e.preventDefault();
       $("#btn-login-user").trigger("click");
     }
   });
 
+  $(document).on("click", "#btn-logout-user", function () {
+    if (typeof QuizStorage === "undefined" || !QuizStorage.logoutUser) return;
+    QuizStorage.logoutUser();
+    refreshActiveUserLabel();
+  });
+
+  $(document).on("click", "#btn-reset-user", function () {
+    if (typeof QuizStorage === "undefined" || !QuizStorage.resetUserData) return;
+    var raw = $("#login-user-input").val();
+    var user = String(raw == null ? "" : raw).replace(/\s+/g, " ").trim();
+    if (!user) {
+      user = QuizStorage.getActiveUser ? QuizStorage.getActiveUser() : "";
+    }
+    if (!user) {
+      alert("请先输入要重置的用户名。");
+      return;
+    }
+    var yes = confirm(
+      "将重置用户“" +
+        user +
+        "”的PIN与学习数据（已掌握/难词库）。此操作不可恢复，是否继续？"
+    );
+    if (!yes) return;
+    var ok = QuizStorage.resetUserData(user);
+    if (!ok) {
+      alert("未找到该用户名的加密记录。");
+      return;
+    }
+    $("#login-user-input").val(user);
+    $("#login-pin-input").val("");
+    refreshActiveUserLabel();
+    alert("已重置用户“" + user + "”。请使用新PIN重新登录。");
+  });
+
   $(document).on("click", ".quiz-needle-btn", function () {
+    if (!ensureUnlockedOrWarn()) return;
     var $btn = $(this);
     var ix = parseInt($btn.attr("data-word-index"), 10);
     if (isNaN(ix)) return;
@@ -320,19 +399,20 @@ $(function () {
       QuizStorage.removeNeedleIndex(ix);
       $btn
         .removeClass("quiz-needle-btn-cancel")
-        .text("加入难词库")
-        .attr("aria-label", "加入铁杵成针难词库");
+        .attr("aria-label", "加入难词库（红灯）")
+        .attr("title", "加入难词库（红灯）");
     } else {
       if (!QuizStorage.addNeedleIndex) return;
       QuizStorage.addNeedleIndex(ix);
       $btn
         .addClass("quiz-needle-btn-cancel")
-        .text("移出难词库")
-        .attr("aria-label", "从铁杵成针难词库移出");
+        .attr("aria-label", "已加入难词库（再次点击移出）")
+        .attr("title", "已加入难词库（再次点击移出）");
     }
   });
 
   $(document).on("click", ".quiz-master-btn", function () {
+    if (!ensureUnlockedOrWarn()) return;
     var $btn = $(this);
     var ix = parseInt($btn.attr("data-word-index"), 10);
     if (isNaN(ix)) return;
@@ -343,29 +423,25 @@ $(function () {
       QuizStorage.removeMasteredIndex(ix);
       $btn
         .removeClass("quiz-master-btn-cancel")
-        .text("已掌握")
-        .attr(
-          "aria-label",
-          "标记为已掌握，主练与铁杵成针中不再随机出现"
-        );
+        .attr("aria-label", "标记已掌握（绿灯）")
+        .attr("title", "标记已掌握（绿灯）");
     } else {
       if (!QuizStorage.addMasteredIndex) return;
       QuizStorage.addMasteredIndex(ix);
       $btn
         .addClass("quiz-master-btn-cancel")
-        .text("取消已掌握")
-        .attr(
-          "aria-label",
-          "取消已掌握，该词将重新参与随机出题"
-        );
+        .attr("aria-label", "已掌握（再次点击取消）")
+        .attr("title", "已掌握（再次点击取消）");
     }
   });
 
   $(document).on("click", "#btn-export-mastered", function () {
+    if (!ensureUnlockedOrWarn()) return;
     exportMasteredListDownload();
   });
 
   $(document).on("click", "#btn-export-needle", function () {
+    if (!ensureUnlockedOrWarn()) return;
     exportNeedleListDownload();
   });
 });

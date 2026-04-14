@@ -25,6 +25,8 @@ a {
 #navigation span.nav-disabled {
   font-weight: 600;
   font-size: 1rem;
+  font-family: "Trebuchet MS", "Segoe Print", "Microsoft YaHei UI", sans-serif;
+  letter-spacing: 0.02em;
 }
 
 #content {
