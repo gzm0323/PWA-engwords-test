@@ -299,16 +299,13 @@ button:active {
 #content.sentence-page .sentence-intro {
   margin-bottom: 24px;
   opacity: 0.8;
-}
-
-#content.sentence-page .sentence-en {
-  margin: 24px 0;
-  word-break: break-word;
+  line-height: 1.65;
 }
 
 #content.sentence-page .sentence-actions {
-  margin-bottom: 24px;
+  margin-bottom: 14px;
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
@@ -316,10 +313,35 @@ button:active {
   margin: 0;
 }
 
-#content.sentence-page .sentence-gloss {
-  padding: 20px;
-  border-radius: 12px;
-  margin-top: 16px;
+#content.sentence-page .sentence-progress {
+  margin-bottom: 6px;
+}
+
+#content.sentence-page .pairing-board {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+#content.sentence-page .pairing-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#content.sentence-page .pairing-item {
+  width: 100%;
+  margin: 0;
+  text-align: left;
+  justify-content: flex-start;
+  line-height: 1.35;
+  min-height: 46px;
+}
+
+@media (max-width: 600px) {
+  #content.sentence-page .pairing-board {
+    grid-template-columns: 1fr;
+  }
 }
 
 #content.roots-page .roots-intro {

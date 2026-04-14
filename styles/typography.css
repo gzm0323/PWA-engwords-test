@@ -53,15 +53,14 @@ button {
   font-size: 1rem;
 }
 
-#content.sentence-page .sentence-en {
-  font-size: 1.6rem;
+#content.sentence-page .sentence-progress {
+  font-size: 0.98rem;
   font-weight: 600;
-  line-height: 1.4;
 }
 
-#content.sentence-page .sentence-gloss {
-  font-size: 1.1rem;
-  line-height: 1.6;
+#content.sentence-page .pairing-item {
+  font-size: 1.05rem;
+  font-weight: 600;
 }
 
 #content.roots-page .roots-intro {

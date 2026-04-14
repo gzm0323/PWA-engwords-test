@@ -12,10 +12,10 @@
     </script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>勤学不辍 · 随机组句</title>
+    <title>勤学不辍 · 中英配对</title>
     <meta
       name="description"
-      content="由词库单词随机组成英文句子，可查看词义。"
+      content="从难词库随机抽取 5 组单词，进行中英点击配对练习。"
     />
     <meta name="theme-color" content="#334" />
     <link rel="manifest" href="manifest.webmanifest" />
@@ -23,6 +23,8 @@
     <script src="scripts/jquery-1.11.3.js" defer></script>
     <script src="./words_f.txt" defer></script>
     <script src="scripts/word_policy.js" defer></script>
+    <script src="scripts/quiz_storage.js" defer></script>
+    <script src="scripts/hard_words.js" defer></script>
     <script src="scripts/sentence.js" defer></script>
     <script src="./pwa.js" defer></script>
   </head>
@@ -55,20 +57,21 @@
 
     <div id="content" class="sentence-page">
       <p class="sentence-intro">
-        下面句子由词库中的英文词条随机组合而成，可用于朗读与记忆（语法未必成立）。例句与中文翻译在加载时一并获取；译文需点击「句子翻译」后显示。
+        请对下列 5 组单词进行点击配对。
       </p>
-      <p id="sentence-en" class="sentence-en" lang="en"></p>
       <div class="sentence-actions">
-        <button id="btn-new-sentence" type="button">再来一句</button>
-        <button id="btn-toggle-gloss" type="button">
-          <info text="no">单词释义</info>
-        </button>
-        <button id="btn-toggle-translation" type="button">
-          <info text="no">句子翻译</info>
-        </button>
+        <button id="btn-new-round" type="button">再来 5 组</button>
+        <button id="btn-reset-round" type="button">重置本轮</button>
       </div>
-      <p id="sentence-gloss" class="sentence-gloss" style="display: none" lang="zh-CN"></p>
-      <p id="sentence-translation" class="sentence-gloss" style="display: none" lang="zh-CN"></p>
+      <p id="sentence-progress" class="sentence-progress"></p>
+      <div class="pairing-board" aria-label="中英单词配对练习">
+        <div class="pairing-column">
+          <div id="pairing-en-list" class="pairing-list" role="list"></div>
+        </div>
+        <div class="pairing-column">
+          <div id="pairing-zh-list" class="pairing-list" role="list"></div>
+        </div>
+      </div>
     </div>
   </body>
 </html>

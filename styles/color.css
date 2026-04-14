@@ -204,9 +204,31 @@ button:hover {
   background-color: rgba(229, 62, 62, 0.08);
 }
 
-#content.sentence-page .sentence-gloss {
-  background-color: var(--table-stripe);
+#content.sentence-page .pairing-item {
   border: 1px solid var(--border-color);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  box-shadow: none;
+}
+
+#content.sentence-page .pairing-item:hover {
+  background-color: var(--table-stripe);
+}
+
+#content.sentence-page .pairing-item.is-selected {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(49, 130, 206, 0.22);
+}
+
+#content.sentence-page .pairing-item.is-matched {
+  background-color: rgba(56, 161, 105, 0.18);
+  border-color: rgba(56, 161, 105, 0.6);
+  color: var(--text-main);
+}
+
+#content.sentence-page .pairing-item.is-wrong {
+  background-color: rgba(229, 62, 62, 0.14);
+  border-color: rgba(229, 62, 62, 0.65);
 }
 
 #content.roots-page .roots-explain {

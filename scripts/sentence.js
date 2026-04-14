@@ -1,215 +1,207 @@
 /**
- * 随机选择词库中的单词，并通过免费字典 API (Free Dictionary API)
- * 获取包含该词的真实、符合语法的英语例句（长度不超过 MAX_SENTENCE_WORDS）。
+ * 勤学不辍：从难词库中抽取 5 组中英词条，进行点击配对练习。
  */
-var MAX_SENTENCE_WORDS = 20;
-
-function trimEnglishLemma(en) {
-  return String(en == null ? "" : en).replace(/\s+/g, " ").trim();
-}
-
-function countEnglishWords(text) {
-  var s = String(text == null ? "" : text).trim();
-  if (!s) return 0;
-  return s.split(/\s+/).filter(function (w) {
-    return w.length > 0;
-  }).length;
-}
-
-function isSentenceWithinWordLimit(text) {
-  return countEnglishWords(text) <= MAX_SENTENCE_WORDS;
-}
-
-function collectValidIndices() {
-  var pairCount = words.length / 2;
-  var valid = [];
-  var i;
-  for (i = 0; i < pairCount; i++) {
-    var raw = words[i * 2];
-    if (typeof WordPolicy !== "undefined" && WordPolicy.isBlocked) {
-      if (WordPolicy.isBlocked(raw)) continue;
-    }
-    // 过滤掉多词词组，只保留单字以提高查词成功率
-    var lemma = trimEnglishLemma(raw);
-    if (!lemma || lemma.indexOf(" ") !== -1) continue;
-    valid.push(i);
-  }
-  if (valid.length === 0) {
-    for (i = 0; i < pairCount; i++) {
-      if (trimEnglishLemma(words[i * 2])) valid.push(i);
-    }
-  }
-  return valid;
-}
-
-function getRandomWordData() {
-  var valid = collectValidIndices();
-  var idx = valid[Math.floor(Math.random() * valid.length)];
-  var en = trimEnglishLemma(words[idx * 2]);
-  var zh = String(words[idx * 2 + 1] == null ? "" : words[idx * 2 + 1]).trim();
-  return { en: en, zh: zh };
-}
-
-async function fetchExampleSentence(word) {
-  try {
-    const res = await fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + encodeURIComponent(word));
-    if (!res.ok) return null;
-    const data = await res.json();
-    
-    // 收集所有例句
-    let examples = [];
-    for (let entry of data) {
-      if (entry.meanings) {
-        for (let meaning of entry.meanings) {
-          if (meaning.definitions) {
-            for (let def of meaning.definitions) {
-              if (def.example) {
-                examples.push(def.example);
-              }
-            }
-          }
-        }
-      }
-    }
-    examples = examples.filter(isSentenceWithinWordLimit);
-    if (examples.length > 0) {
-      return examples[Math.floor(Math.random() * examples.length)];
-    }
-  } catch (e) {
-    console.error("API error:", e);
-  }
-  return null;
-}
-
-async function buildRandomSentence() {
-  // 尝试多次：同一词条可能只有超长例句，会返回 null 并重试随机词
-  for (let i = 0; i < 15; i++) {
-    let wordData = getRandomWordData();
-    let example = await fetchExampleSentence(wordData.en);
-    if (example) {
-      // 首字母大写
-      example = example.charAt(0).toUpperCase() + example.slice(1);
-      if (!/[.!?]$/.test(example)) example += "."; // 补充标点
-      if (!isSentenceWithinWordLimit(example)) continue;
-
-      return {
-        en: example,
-        gloss: "【" + wordData.en + "】 → " + wordData.zh
-      };
-    }
-  }
-
-  // 如果 API 失败或始终没有符合长度限制的例句，使用兜底模板（保证不超过 20 词）
-  for (let j = 0; j < 8; j++) {
-    let wordData = getRandomWordData();
-    let fallback =
-      "Here is a sentence containing the word '" + wordData.en + "'.";
-    if (isSentenceWithinWordLimit(fallback)) {
-      return {
-        en: fallback,
-        gloss: "【" + wordData.en + "】 → " + wordData.zh
-      };
-    }
-  }
-  return {
-    en: "Here is a short example sentence for practice.",
-    gloss: "【提示】词库例句暂不可用，已显示占位句。"
+(function () {
+  var ROUND_SIZE = 5;
+  var state = {
+    pairs: [],
+    matched: {},
+    selectedEnId: null,
+    selectedZhId: null
   };
-}
 
-function setLoadingState(isLoading) {
-  var btn = $("#btn-new-sentence");
-  if (isLoading) {
-    btn.prop("disabled", true);
-    btn.text("加载中...");
-    $("#sentence-en").text("Fetching a real sentence from dictionary...");
-    $("#sentence-gloss").hide();
-    $("#sentence-translation").hide();
-    $("#btn-toggle-gloss").hide();
-    $("#btn-toggle-translation").hide();
-  } else {
-    btn.prop("disabled", false);
-    btn.text("再来一句");
-    $("#btn-toggle-gloss").show();
-    $("#btn-toggle-translation").show();
+  function escapeHtml(text) {
+    return String(text == null ? "" : text)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
-}
 
-async function fetchTranslation(text) {
-  try {
-    const url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=zh-CN&dt=t&q=" + encodeURIComponent(text);
-    const res = await fetch(url);
-    if (!res.ok) return "翻译获取失败，请稍后再试。";
-    const data = await res.json();
-    let translation = "";
-    if (data && data[0]) {
-      for (let i = 0; i < data[0].length; i++) {
-        translation += data[0][i][0];
-      }
+  function trimText(text) {
+    return String(text == null ? "" : text).replace(/\s+/g, " ").trim();
+  }
+
+  function shuffle(arr) {
+    var out = arr.slice();
+    for (var i = out.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = out[i];
+      out[i] = out[j];
+      out[j] = tmp;
     }
-    return translation || "无法获取翻译。";
-  } catch (e) {
-    console.error("Translation API error:", e);
-    return "翻译请求出错。";
+    return out;
   }
-}
 
-async function renderSentence() {
-  setLoadingState(true);
-  var data = await buildRandomSentence();
-  var zh = await fetchTranslation(data.en);
+  function getNeedlePool() {
+    var fromHard =
+      typeof HARD_WORD_INDICES !== "undefined" && HARD_WORD_INDICES.length
+        ? HARD_WORD_INDICES.slice()
+        : [];
+    if (fromHard.length > 0) return fromHard;
 
-  $("#sentence-en").text(data.en);
-  $("#sentence-gloss").text(data.gloss);
-  $("#sentence-gloss").hide();
-
-  $("#sentence-translation").text("【翻译】" + zh);
-  $("#sentence-translation").hide();
-
-  $("#btn-toggle-gloss info").attr("text", "no");
-  $("#btn-toggle-gloss info").text("单词释义");
-
-  $("#btn-toggle-translation info").attr("text", "no");
-  $("#btn-toggle-translation info").text("句子翻译");
-
-  setLoadingState(false);
-}
-
-function toggleGloss() {
-  var info = $("#btn-toggle-gloss info").attr("text");
-  if (info === "no") {
-    $("#sentence-gloss").slideDown(150);
-    $("#btn-toggle-gloss info").attr("text", "yes");
-    $("#btn-toggle-gloss info").text("隐藏释义");
-  } else {
-    $("#sentence-gloss").slideUp(150);
-    $("#btn-toggle-gloss info").attr("text", "no");
-    $("#btn-toggle-gloss info").text("单词释义");
+    var pairCount = typeof words !== "undefined" ? words.length / 2 : 0;
+    var all = [];
+    for (var i = 0; i < pairCount; i++) {
+      all.push(i);
+    }
+    return all;
   }
-}
 
-function toggleTranslation() {
-  var info = $("#btn-toggle-translation info").attr("text");
-  if (info === "no") {
-    $("#sentence-translation").slideDown(150);
-    $("#btn-toggle-translation info").attr("text", "yes");
-    $("#btn-toggle-translation info").text("隐藏翻译");
-  } else {
-    $("#sentence-translation").slideUp(150);
-    $("#btn-toggle-translation info").attr("text", "no");
-    $("#btn-toggle-translation info").text("句子翻译");
+  function pickRoundPairs() {
+    if (typeof words === "undefined" || !words.length) return [];
+    var pool = shuffle(getNeedlePool());
+    var picked = [];
+    var seen = {};
+    var max = Math.min(ROUND_SIZE, pool.length);
+
+    for (var i = 0; i < pool.length && picked.length < max; i++) {
+      var idx = pool[i];
+      if (seen[idx]) continue;
+
+      var en = trimText(words[idx * 2]);
+      var zh = trimText(words[idx * 2 + 1]);
+      if (!en || !zh) continue;
+
+      seen[idx] = true;
+      picked.push({
+        id: "pair-" + idx,
+        idx: idx,
+        en: en,
+        zh: zh
+      });
+    }
+
+    return picked;
   }
-}
 
-$(function () {
-  renderSentence();
-  $("#btn-new-sentence").on("click", function () {
-    renderSentence();
+  function updateProgress() {
+    var done = Object.keys(state.matched).length;
+    var total = state.pairs.length;
+    $("#sentence-progress").text("进度：" + done + " / " + total);
+  }
+
+  function clearSelection() {
+    state.selectedEnId = null;
+    state.selectedZhId = null;
+    $(".pairing-item").removeClass("is-selected");
+  }
+
+  function renderRound() {
+    var enList = $("#pairing-en-list");
+    var zhList = $("#pairing-zh-list");
+    enList.empty();
+    zhList.empty();
+
+    if (!state.pairs.length) {
+      $("#sentence-progress").text("进度：0 / 0");
+      return;
+    }
+
+    var enItems = shuffle(state.pairs.map(function (p) {
+      return {
+        id: p.id,
+        text: p.en
+      };
+    }));
+    var zhItems = shuffle(state.pairs.map(function (p) {
+      return {
+        id: p.id,
+        text: p.zh
+      };
+    }));
+
+    for (var i = 0; i < enItems.length; i++) {
+      enList.append(
+        '<button type="button" class="pairing-item pairing-en" data-id="' +
+          enItems[i].id +
+          '">' +
+          escapeHtml(enItems[i].text) +
+          "</button>"
+      );
+    }
+
+    for (var j = 0; j < zhItems.length; j++) {
+      zhList.append(
+        '<button type="button" class="pairing-item pairing-zh" data-id="' +
+          zhItems[j].id +
+          '">' +
+          escapeHtml(zhItems[j].text) +
+          "</button>"
+      );
+    }
+
+    updateProgress();
+  }
+
+  function markPairResult(isMatch, enId, zhId) {
+    var enBtn = $('.pairing-en[data-id="' + enId + '"]');
+    var zhBtn = $('.pairing-zh[data-id="' + zhId + '"]');
+    if (isMatch) {
+      enBtn.removeClass("is-selected").addClass("is-matched").prop("disabled", true);
+      zhBtn.removeClass("is-selected").addClass("is-matched").prop("disabled", true);
+      state.matched[enId] = true;
+      updateProgress();
+      return;
+    }
+    enBtn.removeClass("is-selected").addClass("is-wrong");
+    zhBtn.removeClass("is-selected").addClass("is-wrong");
+    setTimeout(function () {
+      enBtn.removeClass("is-wrong");
+      zhBtn.removeClass("is-wrong");
+    }, 320);
+  }
+
+  function tryMatch() {
+    if (!state.selectedEnId || !state.selectedZhId) return;
+    var ok = state.selectedEnId === state.selectedZhId;
+    markPairResult(ok, state.selectedEnId, state.selectedZhId);
+    clearSelection();
+  }
+
+  function startNewRound() {
+    state.pairs = pickRoundPairs();
+    state.matched = {};
+    state.selectedEnId = null;
+    state.selectedZhId = null;
+    renderRound();
+  }
+
+  function resetCurrentRound() {
+    state.matched = {};
+    state.selectedEnId = null;
+    state.selectedZhId = null;
+    renderRound();
+  }
+
+  $(function () {
+    $("#pairing-en-list").on("click", ".pairing-en", function () {
+      var id = $(this).attr("data-id");
+      if (state.matched[id]) return;
+      $(".pairing-en").removeClass("is-selected");
+      $(this).addClass("is-selected");
+      state.selectedEnId = id;
+      tryMatch();
+    });
+
+    $("#pairing-zh-list").on("click", ".pairing-zh", function () {
+      var id = $(this).attr("data-id");
+      if (state.matched[id]) return;
+      $(".pairing-zh").removeClass("is-selected");
+      $(this).addClass("is-selected");
+      state.selectedZhId = id;
+      tryMatch();
+    });
+
+    $("#btn-new-round").on("click", function () {
+      startNewRound();
+    });
+
+    $("#btn-reset-round").on("click", function () {
+      resetCurrentRound();
+    });
+
+    startNewRound();
   });
-  $("#btn-toggle-gloss").on("click", function () {
-    toggleGloss();
-  });
-  $("#btn-toggle-translation").on("click", function () {
-    toggleTranslation();
-  });
-});
+})();
