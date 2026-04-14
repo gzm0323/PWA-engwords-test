@@ -24,6 +24,10 @@ function resetAnswerUI(tagName) {
   );
 }
 
+function showQuizHint() {
+  $("#content .quiz-hint").stop(true, true).slideDown(120);
+}
+
 /** 未掌握词条不足时不再按「已掌握」过滤，避免题库被抽空。 */
 var QUIZ_MIN_UNMASTERED = 12;
 
@@ -161,6 +165,7 @@ function buildCtoEAnswerCell(k) {
 }
 
 function getEnglishWords() {
+  showQuizHint();
   var content = $("#content table");
   $("#content table tr").remove();
   var pairCount = words.length / 2;
@@ -189,6 +194,7 @@ function getEnglishWords() {
 }
 
 function getChineseWords() {
+  showQuizHint();
   var content = $("#content table");
   $("#content table tr").remove();
   var pairCount = words.length / 2;
