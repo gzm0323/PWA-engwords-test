@@ -934,4 +934,9 @@ $(function () {
     if (idx >= WORD_ROOTS_SORTED.length) idx = 0;
     renderRootAt(idx);
   });
+  $("#btn-prev-root").on("click", function () {
+    idx -= 1;
+    if (idx < 0) idx = WORD_ROOTS_SORTED.length - 1;
+    renderRootAt(idx);
+  });
 });

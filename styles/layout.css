@@ -394,6 +394,9 @@ button:active {
 
 #content.roots-page .roots-actions {
   margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 #content.roots-page .roots-actions button {
