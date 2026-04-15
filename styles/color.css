@@ -231,6 +231,16 @@ button:hover {
   border-color: rgba(229, 62, 62, 0.65);
 }
 
+#content.sentence-page .sentence-celebration {
+  color: #ffd700;
+  text-shadow: 
+    0 0 10px #ff8c00,
+    0 0 20px #ff8c00,
+    0 0 30px #ff0080,
+    0 0 40px #ff0080,
+    2px 2px 2px rgba(0,0,0,0.5);
+}
+
 #content.roots-page .roots-explain {
   background-color: var(--table-stripe);
   border: 1px solid var(--border-color);

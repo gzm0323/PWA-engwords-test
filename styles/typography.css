@@ -63,6 +63,21 @@ button {
   font-weight: 600;
 }
 
+#content.sentence-page .sentence-celebration {
+  font-size: 3rem;
+  font-weight: 900;
+  font-family: Impact, "Arial Black", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 1.2;
+}
+
+@media (max-width: 600px) {
+  #content.sentence-page .sentence-celebration {
+    font-size: 2.2rem;
+  }
+}
+
 #content.roots-page .roots-intro {
   font-size: 1rem;
 }

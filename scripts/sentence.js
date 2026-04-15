@@ -7,7 +7,8 @@
     pairs: [],
     matched: {},
     selectedEnId: null,
-    selectedZhId: null
+    selectedZhId: null,
+    streak: 0
   };
 
   function escapeHtml(text) {
@@ -61,8 +62,11 @@
       if (seen[idx]) continue;
 
       var en = trimText(words[idx * 2]);
-      var zh = trimText(words[idx * 2 + 1]);
-      if (!en || !zh) continue;
+      var rawZh = trimText(words[idx * 2 + 1]);
+      if (!en || !rawZh) continue;
+
+      var zhParts = rawZh.split(/[;；]/).map(trimText).filter(Boolean);
+      var zh = zhParts[Math.floor(Math.random() * zhParts.length)];
 
       seen[idx] = true;
       picked.push({
@@ -80,6 +84,50 @@
     var done = Object.keys(state.matched).length;
     var total = state.pairs.length;
     $("#sentence-progress").text("进度：" + done + " / " + total);
+
+    if (done === total && total > 0) {
+      state.streak++;
+      showCelebration(state.streak);
+    }
+  }
+
+  function showCelebration(streak) {
+    var msg = "You did it!";
+    if (streak === 2) msg = "2 Wins";
+    else if (streak === 3) msg = "Triple win.";
+    else if (streak === 4) msg = "Keep winning!";
+    else if (streak === 5) msg = "You must be a genius!";
+    else if (streak > 5) msg = "Congrats! Score " + streak;
+
+    var $celeb = $("#sentence-celebration");
+    $celeb.text(msg).removeClass("celeb-animate");
+    // Trigger reflow
+    void $celeb[0].offsetWidth;
+    $celeb.addClass("celeb-animate");
+    
+    createConfetti();
+  }
+
+  function createConfetti() {
+    for (var i = 0; i < 40; i++) {
+      var $c = $('<div class="confetti"></div>');
+      $c.css({
+        left: Math.random() * 100 + "vw",
+        top: -20 - Math.random() * 50 + "px",
+        animationDelay: Math.random() * 0.5 + "s",
+        backgroundColor: "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 60%)",
+        animationDuration: (1.5 + Math.random() * 1.5) + "s"
+      });
+      $("body").append($c);
+      setTimeout(
+        (function (el) {
+          return function () {
+            el.remove();
+          };
+        })($c),
+        3500
+      );
+    }
   }
 
   function clearSelection() {
@@ -169,6 +217,7 @@
   }
 
   function resetCurrentRound() {
+    state.streak = 0;
     state.matched = {};
     state.selectedEnId = null;
     state.selectedZhId = null;
