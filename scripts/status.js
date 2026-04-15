@@ -85,6 +85,14 @@ function buildNeedleButton(k) {
 }
 
 function buildPromptActions(k) {
+  var isNeedle = $("#content").hasClass("needle-page");
+  if (isNeedle) {
+    return (
+      '<span class="quiz-prompt-actions">' +
+      buildMasterButton(k) +
+      "</span>"
+    );
+  }
   return (
     '<span class="quiz-prompt-actions">' +
     buildNeedleButton(k) +

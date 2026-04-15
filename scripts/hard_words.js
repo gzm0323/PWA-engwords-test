@@ -1,9 +1,9 @@
 /**
- * 铁杵成针：从全库词条中筛选「较难」实词，取难度分最高的约 500 个。
+ * 铁杵成针：从全库词条中筛选「较难」实词，取难度分最高的约 300 个。
  * 难度依据：字母数、拉丁/希腊词缀（-tion、-ology、dis- 等）、长词加权；排除短语与非字母杂项。
  */
 (function (global) {
-  var TARGET_COUNT = 500;
+  var TARGET_COUNT = 300;
 
   function trimEnglishLemma(en) {
     return String(en == null ? "" : en).replace(/\s+/g, " ").trim();
