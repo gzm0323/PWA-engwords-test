@@ -114,10 +114,10 @@ button:active {
 #content td.quiz-prompt {
   width: 30%;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: space-between;
-  gap: 10px 16px;
+  gap: 10px;
 }
 
 #content td.quiz-answer-cell {
@@ -125,17 +125,18 @@ button:active {
 }
 
 #content .quiz-prompt-text {
-  flex: 1 1 160px;
+  flex: 1 1 auto;
   min-width: 0;
-  white-space: nowrap;
+  white-space: normal;
   word-break: keep-all;
-  overflow-wrap: normal;
+  overflow-wrap: break-word;
 }
 
 #content .quiz-prompt-actions {
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-end;
+  align-items: center;
   gap: 6px;
 }
 
