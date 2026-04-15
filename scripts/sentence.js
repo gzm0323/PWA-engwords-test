@@ -65,8 +65,20 @@
       var rawZh = trimText(words[idx * 2 + 1]);
       if (!en || !rawZh) continue;
 
-      var zhParts = rawZh.split(/[;；]/).map(trimText).filter(Boolean);
-      var zh = zhParts[Math.floor(Math.random() * zhParts.length)];
+      var zhMatches = rawZh.match(/[\u4e00-\u9fa5]+/g);
+      if (!zhMatches || zhMatches.length === 0) continue;
+
+      var validZh = [];
+      for (var k = 0; k < zhMatches.length; k++) {
+        var m = zhMatches[k];
+        var ignores = /^(美|英|名|动|形|副|代|介|连|叹|数|冠|及|物|词|复数|过去式|过去分词|现在分词|单数|比较级|最高级|名词|动词|形容词|副词|代词|介词|连词|叹词|数词|冠词)$/;
+        if (!ignores.test(m)) {
+          validZh.push(m);
+        }
+      }
+      if (validZh.length === 0) validZh = zhMatches;
+
+      var zh = validZh[Math.floor(Math.random() * validZh.length)];
 
       seen[idx] = true;
       picked.push({
