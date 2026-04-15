@@ -484,6 +484,11 @@ $(function () {
     if (idx >= WORD_STORIES_SORTED.length) idx = 0;
     renderWordStoryAt(idx);
   });
+  $("#btn-prev-word-story").on("click", function () {
+    idx -= 1;
+    if (idx < 0) idx = WORD_STORIES_SORTED.length - 1;
+    renderWordStoryAt(idx);
+  });
   $("#btn-toggle-story-zh").on("click", function () {
     var info = $("#btn-toggle-story-zh info").attr("text");
     if (info === "no") {
