@@ -1,5 +1,5 @@
 /* eslint-disable */
-const CACHE_NAME = "engwords-pwa-v24";
+const CACHE_NAME = "engwords-pwa-v25";
 
 const PRECACHE_URLS = [
   "./",
