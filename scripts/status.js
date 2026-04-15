@@ -120,6 +120,19 @@ function buildMasteredBaseExclude(pairCount) {
 
 function pickWordIndexForRound(exclude) {
   var pairCount = words.length / 2;
+  
+  if (typeof QuizStorage !== "undefined" && QuizStorage.getNeedleIndices) {
+    var needleIndices = QuizStorage.getNeedleIndices();
+    // 增加出题频率：从 40% 提升至 60% 概率优先从难词库抽词
+    if (needleIndices.length > 0 && Math.random() < 0.6) {
+      var kNeedle = needleIndices[Math.floor(Math.random() * needleIndices.length)];
+      if (kNeedle >= 0 && kNeedle < pairCount && !exclude[kNeedle]) {
+        exclude[kNeedle] = true;
+        return kNeedle;
+      }
+    }
+  }
+
   if (typeof WordPolicy !== "undefined" && WordPolicy.pickIndex) {
     var idx = WordPolicy.pickIndex(words, exclude);
     exclude[idx] = true;
@@ -158,10 +171,29 @@ function buildEtoCAnswerCell(k) {
 
 function buildCtoEAnswerCell(k) {
   var en = words[k * 2];
-  var zh = words[k * 2 + 1];
+  var rawZh = words[k * 2 + 1];
+
+  var zhMatches = String(rawZh == null ? "" : rawZh).match(/[\u4e00-\u9fa5]+/g);
+  var displayZh = rawZh;
+  if (zhMatches && zhMatches.length > 0) {
+    var validZh = [];
+    for (var i = 0; i < zhMatches.length; i++) {
+      var m = zhMatches[i];
+      var ignores = /^(美|英|名|动|形|副|代|介|连|叹|数|冠|及|物|词|复数|过去式|过去分词|现在分词|单数|比较级|最高级|名词|动词|形容词|副词|代词|介词|连词|叹词|数词|冠词)$/;
+      if (!ignores.test(m)) {
+        validZh.push(m);
+      }
+    }
+    if (validZh.length > 0) {
+      displayZh = validZh[Math.floor(Math.random() * validZh.length)];
+    } else {
+      displayZh = zhMatches[Math.floor(Math.random() * zhMatches.length)];
+    }
+  }
+
   return (
     '<td class="quiz-prompt"><span class="quiz-prompt-text">' +
-    escQuiz(zh) +
+    escQuiz(displayZh) +
     "</span>" +
     buildPromptActions(k) +
     '</td><td class="quiz-answer-cell" data-word-index="' +
