@@ -19,7 +19,7 @@ function resetAnswerUI(tagName) {
   $("#btn2 info").attr("text", "no");
   $("#btn2 info").text("显示答案");
   $("#words-table " + tagName).attr("style", "display:none");
-  $("#words-table td.quiz-answer-cell").removeClass(
+  $("#words-table td.quiz-question-cell").removeClass(
     "quiz-cell-correct quiz-cell-wrong"
   );
 }
@@ -157,15 +157,13 @@ function buildEtoCAnswerCell(k) {
   var en = words[k * 2];
   var zh = words[k * 2 + 1];
   return (
-    '<td class="quiz-prompt"><span class="quiz-prompt-text">' +
-    escQuiz(en) +
-    "</span>" +
-    buildPromptActions(k) +
-    '</td><td class="quiz-answer-cell" data-word-index="' +
-    k +
-    '"><input type="text" class="quiz-input" autocomplete="off" spellcheck="false" /><chinese style="display:none">' +
-    escQuiz(zh) +
-    "</chinese></td>"
+    '<td class="quiz-question-cell" data-word-index="' + k + '">' +
+    '<div class="quiz-item-grid">' +
+    '<div class="q-word"><span class="quiz-prompt-text">' + escQuiz(en) + '</span></div>' +
+    '<div class="q-input"><input type="text" class="quiz-input" autocomplete="off" spellcheck="false" /></div>' +
+    '<div class="q-lights">' + buildPromptActions(k) + '</div>' +
+    '<div class="q-answer"><chinese style="display:none">' + escQuiz(zh) + '</chinese></div>' +
+    '</div></td>'
   );
 }
 
@@ -192,15 +190,13 @@ function buildCtoEAnswerCell(k) {
   }
 
   return (
-    '<td class="quiz-prompt"><span class="quiz-prompt-text">' +
-    escQuiz(displayZh) +
-    "</span>" +
-    buildPromptActions(k) +
-    '</td><td class="quiz-answer-cell" data-word-index="' +
-    k +
-    '"><input type="text" class="quiz-input" autocomplete="off" spellcheck="false" /><english style="display:none">' +
-    escQuiz(en) +
-    "</english></td>"
+    '<td class="quiz-question-cell" data-word-index="' + k + '">' +
+    '<div class="quiz-item-grid">' +
+    '<div class="q-word"><span class="quiz-prompt-text">' + escQuiz(displayZh) + '</span></div>' +
+    '<div class="q-input"><input type="text" class="quiz-input" autocomplete="off" spellcheck="false" /></div>' +
+    '<div class="q-lights">' + buildPromptActions(k) + '</div>' +
+    '<div class="q-answer"><english style="display:none">' + escQuiz(en) + '</english></div>' +
+    '</div></td>'
   );
 }
 
