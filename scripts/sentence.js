@@ -127,7 +127,9 @@
         left: Math.random() * 100 + "vw",
         top: -20 - Math.random() * 50 + "px",
         animationDelay: Math.random() * 0.5 + "s",
-        backgroundColor: "hsl(" + Math.floor(Math.random() * 360) + ", 100%, 60%)",
+        backgroundColor: ["#B8860B", "#B23A2E", "#2E8B6F", "#2A2F45", "#E0B252"][
+          Math.floor(Math.random() * 5)
+        ],
         animationDuration: (1.5 + Math.random() * 1.5) + "s"
       });
       $("body").append($c);

@@ -271,6 +271,42 @@ function showAnswer(Str) {
   }
 }
 
+/**
+ * 即时判分：把用户输入与该题答案比对，给单元格加对/错样式。
+ * allowWrong=false（输入中）只标记「对」，不打扰性地标「错」；
+ * allowWrong=true（失焦/回车）才会标记「错」。
+ */
+function evaluateQuizInput($input, allowWrong) {
+  var $cell = $input.closest(".quiz-question-cell");
+  if ($cell.length === 0) return;
+
+  var val = $input.val();
+  var hasVal = String(val == null ? "" : val).trim().length > 0;
+  if (!hasVal) {
+    $cell.removeClass("quiz-cell-correct quiz-cell-wrong");
+    return;
+  }
+
+  if (typeof QuizStorage === "undefined") return;
+
+  var $zh = $cell.find(".q-answer chinese");
+  var $en = $cell.find(".q-answer english");
+  var matched = false;
+  if ($zh.length && QuizStorage.answerMatchesChinese) {
+    matched = QuizStorage.answerMatchesChinese(val, $zh.text());
+  } else if ($en.length && QuizStorage.answerMatchesEnglish) {
+    matched = QuizStorage.answerMatchesEnglish(val, $en.text());
+  }
+
+  if (matched) {
+    $cell.addClass("quiz-cell-correct").removeClass("quiz-cell-wrong");
+  } else if (allowWrong) {
+    $cell.addClass("quiz-cell-wrong").removeClass("quiz-cell-correct");
+  } else {
+    $cell.removeClass("quiz-cell-correct quiz-cell-wrong");
+  }
+}
+
 function exportMasteredListDownload() {
   if (typeof words === "undefined" || typeof QuizStorage === "undefined") {
     return;
@@ -391,4 +427,32 @@ $(function () {
   $(document).on("click", "#btn-export-needle", function () {
     exportNeedleListDownload();
   });
+
+  // 即时判分：输入时只标对，失焦/回车才标错。
+  $(document).on("input", ".quiz-input", function () {
+    evaluateQuizInput($(this), false);
+  });
+  $(document).on("focusout", ".quiz-input", function () {
+    evaluateQuizInput($(this), true);
+  });
+  $(document).on("keydown", ".quiz-input", function (e) {
+    if (e.which === 13 || e.key === "Enter") {
+      evaluateQuizInput($(this), true);
+    }
+  });
+
+  // 主练页（EtoC / CtoE）按钮：用委托替代内联 onclick。
+  var quizMode = $("#content").attr("data-quiz-mode");
+  if (quizMode === "etoc" || quizMode === "ctoe") {
+    $(document).on("click", "#btn1", function () {
+      if (quizMode === "ctoe") {
+        getChineseWords();
+      } else {
+        getEnglishWords();
+      }
+    });
+    $(document).on("click", "#btn2", function () {
+      showAnswer(quizMode === "ctoe" ? "english" : "chinese");
+    });
+  }
 });

@@ -108,6 +108,17 @@ function showAnswerNeedle() {
 }
 
 $(function () {
+  // 用委托替代内联 onclick。
+  $(document).on("click", "#btn-needle-ec", function () {
+    getNeedleEnglishWords();
+  });
+  $(document).on("click", "#btn-needle-ce", function () {
+    getNeedleChineseWords();
+  });
+  $(document).on("click", "#btn2", function () {
+    showAnswerNeedle();
+  });
+
   var n =
     typeof HARD_WORD_POOL_SIZE !== "undefined" ? HARD_WORD_POOL_SIZE : 0;
   $("#needle-pool-size").text(String(n));

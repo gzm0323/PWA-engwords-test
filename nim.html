@@ -1,139 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KXS2DY9MQ6"></script>
+    <script src="scripts/analytics.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>五子棋 · 初中英语单词练习测试机</title>
+    <meta name="theme-color" content="#2A2F45" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link rel="stylesheet" href="styles/basic.css" media="screen" />
+    <script src="scripts/jquery-1.11.3.js" defer></script>
+    <script src="./words_f.js" defer></script>
+    <script src="./pwa.js" defer></script>
+    <script src="scripts/nim.js" defer></script>
+  </head>
+  <body>
+    <div id="header">
+      <p>
+        <a href="index.html">
+          <span class="title-full">初中英语单词练习测试机</span>
+          <span class="title-short" aria-hidden="true">初中英语单词测试</span>
+        </a>
+      </p>
+    </div>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<html>
-    <head>
-        <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-KXS2DY9MQ6"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
+    <div id="navigation" aria-label="导航">
+      <ul>
+        <li class="nav-primary"><a href="EtoC.html">看英文写中文</a></li>
+        <li class="nav-primary"><a href="CtoE.html">看中文写英文</a></li>
+        <li class="nav-secondary">
+          <a href="sentence.html">勤学不辍</a>
+        </li>
+        <li class="nav-secondary">
+          <a href="needle.html">铁杵成针</a>
+        </li>
+        <li class="nav-secondary">
+          <a href="accumulate.html">日积月累</a>
+        </li>
+        <li class="nav-secondary">
+          <a href="roots.html">水滴石穿</a>
+        </li>
+      </ul>
+    </div>
 
-            gtag('config', 'G-KXS2DY9MQ6');
-        </script>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>初中英语单词练习测试机</title>
-        <meta name="theme-color" content="#334" />
-        <link rel="manifest" href="manifest.webmanifest" />
-        <link rel="stylesheet" type="text/css" media="screen" href="styles/basic.css" />
-        <script type="text/javascript" src="scripts/jquery-1.11.3.js"></script>
-        <script type="text/javascript" src="./words_f.txt"></script>
-        <script type="text/javascript" src="./pwa.js"></script>
-        <style type='text/css'>
-            canvas {
-                display: block;
-                margin: 50px auto;
-                box-shadow: -2px -2px 2px #efefef, 5px 5px 5px #b9b9b9;
-                cursor: pointer;
-            }
-            .btn-wrap { 
-                display: flex; 
-                flex-direction: row; 
-                justify-content:center;
-            }
-            .btn-wrap div { 
-                margin: 0 10px;
-            }
-            div>span {
-                display: inline-block;
-                padding: 10px 20px;
-                color: #fff;
-                background-color: #EE82EE;
-                border-radius: 5px;
-                cursor: pointer;
-            }
-            div.unable span { 
-                background: #D6D6D4; 
-                color: #adacaa;
-            }
-            #result-wrap {text-align: center;}
-
-            .inputNum {
-    vertical-align: middle;
-    height: 22px;
-    border: 1px solid #d0d0d0;
-    text-align: center;
-}
-
-.btn {
-    display: inline-block;
-    vertical-align: middle;
-    background: #f0f0f0 no-repeat center;
-    border: 1px solid #d0d0d0;
-    width: 24px;
-    height: 24px;
-    border-radius: 2px;
-    box-shadow: 0 1px rgba(100, 100, 100, .1);
-    color: #666;
-    transition: color .2s, background-color .2s;
-}
-
-.btn:active {
-    box-shadow: inset 0 1px rgba(100, 100, 100, .1);
-}
-
-.btn:hover {
-    background-color: #e9e9e9;
-    color: #333;
-}
-
-.btn_plus {
-    background-image: linear-gradient(to top, currentColor, currentColor), linear-gradient(to top, currentColor, currentColor);
-    background-size: 10px 2px, 2px 10px;
-}
-
-.btn_minus {
-    background-image: linear-gradient(to top, currentColor, currentColor);
-    background-size: 10px 2px;
-}           
-        </style>
-    </head>
-    <body>
-        <div id="header">
-            <p>
-              <span class="title-full">初中英语单词练习测试机</span>
-              <span class="title-short" aria-hidden="true">初中英语单词测试</span>
-            </p>
-          </div>
-          <div id="navigation">
-            <ul>
-                <li class="nav-primary"><a href="EtoC.html">好好学习(英翻中)</a></li>
-                <li class="nav-primary"><a href="CtoE.html">天天向上(中翻英)</a></li>
-                <li class="nav-secondary">
-                  <a href="sentence.html">勤学不辍(休息一会)</a>
-                </li>
-                <li class="nav-secondary">
-                  <a href="needle.html">铁杵成针</a>
-                </li>
-                <li class="nav-secondary">
-                  <a href="accumulate.html">日积月累</a>
-                </li>
-                <li class="nav-secondary">
-                  <a href="roots.html">水滴石穿</a>
-                </li>
-            </ul>
-          </div>
-                <h3 id="result-wrap">--AI五子棋--</h3>
-        <canvas id="chess" width="450px" height="450px"></canvas>
-        <a href="javascript:alert('ok')" class="btn btn_plus" role="button" title="增加"></a>
-        <input class="inputNum" value="1" size="1">
-        <a href="javascript:" class="btn btn_minus" role="button" title="减少"></a>       
-       <div class="btn-wrap">
-            <div id='restart' class="restart">
-                <span>重新开始</span>
-            </div>
-            <div id='goback' class="goback unable">
-                <span>悔棋</span>
-            </div>
-            <div id='return' class="return unable">
-                <span>撤销悔棋</span>
-            </div>
-        </div>
-        <script type="text/javascript" src="scripts/nim.js"></script>
-        <script type="text/javascript" charset="utf-8">
-        </script>
-    </body>
+    <div id="content" class="nim-page">
+      <h3 id="result-wrap">AI 五子棋</h3>
+      <canvas id="chess" width="450" height="450"></canvas>
+      <div class="btn-wrap">
+        <button type="button" id="restart" class="restart">重新开始</button>
+        <button type="button" id="goback" class="goback unable">悔棋</button>
+        <button type="button" id="return" class="return unable">撤销悔棋</button>
+      </div>
+    </div>
+  </body>
 </html>

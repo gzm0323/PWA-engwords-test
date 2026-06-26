@@ -22,6 +22,23 @@ body {
   margin: 0;
 }
 
+#header a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* short gold rule beneath the title — a quiet binding device */
+#header::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  margin: 12px auto 0;
+  border-radius: 2px;
+  background: var(--accent);
+  opacity: 0.85;
+}
+
 #navigation {
   border-radius: 16px;
   padding: 10px;
@@ -49,6 +66,7 @@ body {
 
 #navigation li a,
 #navigation li span.nav-disabled {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,6 +76,17 @@ body {
   line-height: 1.2;
   height: 100%;
   cursor: pointer;
+}
+
+/* cinnabar seal mark on the active page */
+#navigation a.here::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
 }
 
 #navigation li span.nav-disabled {
@@ -557,5 +586,129 @@ button:active {
 @media (max-width: 600px) {
   #content.needle-page .needle-intro {
     font-size: 0.95rem;
+  }
+}
+
+/* ============================================================
+   Home hub (日积月累 + 水滴石穿 made literal)
+   ============================================================ */
+#content.home-page .home-intro {
+  margin-bottom: 20px;
+  opacity: 0.88;
+  line-height: 1.65;
+}
+
+#content.home-page .home-progress {
+  padding: 18px 20px;
+  border-radius: 14px;
+  margin-bottom: 22px;
+}
+
+#content.home-page .home-progress-label {
+  margin: 0 0 10px;
+}
+
+#content.home-page .home-progress-stats {
+  margin: 0 0 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  opacity: 0.9;
+}
+
+#content.home-page .home-progress-track {
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+#content.home-page .home-progress-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#content.home-page .home-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+#content.home-page .home-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px;
+  border-radius: 14px;
+  text-decoration: none;
+  transition: transform 0.12s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+#content.home-page .home-card:hover {
+  transform: translateY(-2px);
+}
+
+#content.home-page .home-card:active {
+  transform: translateY(0) scale(0.99);
+}
+
+@media (max-width: 600px) {
+  #content.home-page .home-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================
+   nim (五子棋)
+   ============================================================ */
+#content.nim-page {
+  text-align: center;
+  overflow-x: auto;
+}
+
+#content.nim-page #result-wrap {
+  margin: 0 0 8px;
+}
+
+/* fixed 450px grid — must not scale, or click→cell mapping (offsetX/30) breaks */
+#content.nim-page canvas {
+  display: block;
+  margin: 16px auto 24px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#content.nim-page .btn-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+#content.nim-page .btn-wrap button {
+  margin: 0;
+}
+
+/* ============================================================
+   Quality floor: visible focus + reduced motion
+   ============================================================ */
+a:focus-visible,
+button:focus-visible,
+#content .quiz-input:focus-visible,
+.pairing-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .confetti {
+    display: none !important;
   }
 }

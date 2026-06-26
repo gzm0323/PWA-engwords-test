@@ -1,73 +1,79 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-KXS2DY9MQ6"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KXS2DY9MQ6"></script>
+    <script src="scripts/analytics.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>看英文写中文 · 初中英语单词练习测试机</title>
+    <meta
+      name="description"
+      content="初中英语单词练习：看英文写中文，随机出题，即时判分，显示/隐藏答案。"
+    />
+    <meta name="theme-color" content="#2A2F45" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <link rel="stylesheet" href="styles/basic.css" media="screen" />
 
-    gtag('config', 'G-KXS2DY9MQ6');
-  </script>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>初中英语单词练习测试机</title>
-  <meta name="theme-color" content="#334" />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <link rel="stylesheet" type="text/css" media="screen" href="styles/basic.css" />
-  <script type="text/javascript" src="scripts/jquery-1.11.3.js"></script>
-  <script type="text/javascript" src="./words_f.txt"></script>
-  <script type="text/javascript" src="scripts/word_policy.js"></script>
-  <script type="text/javascript" src="scripts/quiz_storage.js"></script>
-  <script type="text/javascript" src="scripts/status.js"></script>
-  <script type="text/javascript" src="./pwa.js"></script>
-</head>
-<body>
-  <div id="header">
-    <p>
-      <span class="title-full">初中英语单词练习测试机</span>
-      <span class="title-short" aria-hidden="true">初中英语单词测试</span>
-    </p>
-  </div>
-  <div id="navigation">
-    <ul>
-      <li class="nav-primary"><a class="here" href="EtoC.html">看英文写中文</a></li>
-      <li class="nav-primary"><a href="CtoE.html">看中文写英文</a></li>
-      <li class="nav-secondary">
-        <a href="sentence.html">勤学不辍</a>
-      </li>
-      <li class="nav-secondary">
-        <a href="needle.html">铁杵成针</a>
-      </li>
-      <li class="nav-secondary">
-        <a href="accumulate.html">日积月累</a>
-      </li>
-      <li class="nav-secondary">
-        <a href="roots.html">水滴石穿</a>
-      </li>
-    </ul>
-  </div>
-  <div id="content" class="quiz-main-page">
-    <div class="quiz-main-actions">
-      <button id="btn1" onclick="getEnglishWords();">随机出题</button>
-      <button id="btn2" onclick="showAnswer('chinese');"><info text="no">显示答案</info></button>
+    <script src="scripts/jquery-1.11.3.js" defer></script>
+    <script src="./words_f.js" defer></script>
+    <script src="scripts/word_policy.js" defer></script>
+    <script src="scripts/quiz_storage.js" defer></script>
+    <script src="scripts/status.js" defer></script>
+    <script src="./pwa.js" defer></script>
+  </head>
+  <body>
+    <div id="header">
+      <p>
+        <a href="index.html">
+          <span class="title-full">初中英语单词练习测试机</span>
+          <span class="title-short" aria-hidden="true">初中英语单词测试</span>
+        </a>
+      </p>
     </div>
-    <p class="quiz-hint" style="display: none">
-      可在答题框内输入答案，点击「显示答案」可查看参考答案，点击红灯将单词加入难词库，增加单词的练习频率，点击绿灯表示单词已完全掌握，无需再练习，再次点击取消操作。
-    </p>
-    <div class="quiz-light-legend" aria-label="标记说明" style="display: none">
-      <span><i class="light-dot light-red"></i>红灯：难词库</span>
-      <span><i class="light-dot light-green"></i>绿灯：已掌握</span>
-      <span><i class="light-dot light-yellow"></i>黄灯：已标记，再点取消</span>
+
+    <div id="navigation" aria-label="导航">
+      <ul>
+        <li class="nav-primary"><a class="here" href="EtoC.html">看英文写中文</a></li>
+        <li class="nav-primary"><a href="CtoE.html">看中文写英文</a></li>
+        <li class="nav-secondary">
+          <a href="sentence.html">勤学不辍</a>
+        </li>
+        <li class="nav-secondary">
+          <a href="needle.html">铁杵成针</a>
+        </li>
+        <li class="nav-secondary">
+          <a href="accumulate.html">日积月累</a>
+        </li>
+        <li class="nav-secondary">
+          <a href="roots.html">水滴石穿</a>
+        </li>
+      </ul>
     </div>
-    <div class="quiz-export-corner">
-      <button type="button" id="btn-export-mastered">导出已掌握</button>
-      <button type="button" id="btn-export-needle">导出难词库</button>
+
+    <div id="content" class="quiz-main-page" data-quiz-mode="etoc">
+      <div class="quiz-main-actions">
+        <button id="btn1" type="button">随机出题</button>
+        <button id="btn2" type="button" aria-controls="words-table">
+          <info text="no">显示答案</info>
+        </button>
+      </div>
+      <p class="quiz-hint" style="display: none">
+        可在答题框内输入答案，点击「显示答案」可查看参考答案，点击红灯将单词加入难词库，增加单词的练习频率，点击绿灯表示单词已完全掌握，无需再练习，再次点击取消操作。
+      </p>
+      <div class="quiz-light-legend" aria-label="标记说明" style="display: none">
+        <span><i class="light-dot light-red"></i>红灯：难词库</span>
+        <span><i class="light-dot light-green"></i>绿灯：已掌握</span>
+        <span><i class="light-dot light-yellow"></i>黄灯：已标记，再点取消</span>
+      </div>
+      <div class="quiz-export-corner">
+        <button type="button" id="btn-export-mastered">导出已掌握</button>
+        <button type="button" id="btn-export-needle">导出难词库</button>
+      </div>
+      <table id="words-table">
+        <tbody></tbody>
+      </table>
     </div>
-  <table id="words-table">
-    </table>
-  </div>
-</body>
+  </body>
 </html>

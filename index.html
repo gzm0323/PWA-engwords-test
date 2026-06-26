@@ -1,89 +1,79 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="zh-CN">
   <head>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KXS2DY9MQ6"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-KXS2DY9MQ6');
-    </script>
+    <script src="scripts/analytics.js"></script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>初中英语单词练习测试机</title>
     <meta
       name="description"
-      content="初中英语单词练习：随机出题，显示/隐藏答案，英汉互测。"
+      content="初中英语单词练习：随机出题、英汉互测、难词专练、词根词缀与单词故事。"
     />
-    <meta name="theme-color" content="#334" />
+    <meta name="theme-color" content="#2A2F45" />
     <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <link rel="stylesheet" href="styles/basic.css" media="screen" />
 
-    <script src="scripts/jquery-1.11.3.js" defer></script>
-    <script src="./words_f.txt" defer></script>
-    <script src="scripts/word_policy.js" defer></script>
+    <script src="./words_f.js" defer></script>
     <script src="scripts/quiz_storage.js" defer></script>
-    <script src="scripts/status.js" defer></script>
+    <script src="scripts/home.js" defer></script>
     <script src="./pwa.js" defer></script>
   </head>
   <body>
     <div id="header">
       <p>
-        <span class="title-full">初中英语单词练习测试机</span>
-        <span class="title-short" aria-hidden="true">初中英语单词测试</span>
+        <a href="index.html">
+          <span class="title-full">初中英语单词练习测试机</span>
+          <span class="title-short" aria-hidden="true">初中英语单词测试</span>
+        </a>
       </p>
     </div>
 
-    <div id="navigation" aria-label="导航">
-      <ul>
-        <li class="nav-primary"><a href="EtoC.html">看英文写中文</a></li>
-        <li class="nav-primary"><a href="CtoE.html">看中文写英文</a></li>
-        <li class="nav-secondary">
-          <a href="sentence.html">勤学不辍</a>
-        </li>
-        <li class="nav-secondary">
-          <a href="needle.html">铁杵成针</a>
-        </li>
-        <li class="nav-secondary">
-          <a href="accumulate.html">日积月累</a>
-        </li>
-        <li class="nav-secondary">
-          <a href="roots.html">水滴石穿</a>
-        </li>
-      </ul>
-    </div>
+    <div id="content" class="home-page">
+      <p class="home-intro">
+        每天练一点，日积月累，水滴石穿。选择一个模块开始：
+      </p>
 
-    <div id="content" class="quiz-main-page">
-      <div class="quiz-main-actions">
-        <button id="btn1" type="button" onclick="getEnglishWords();">
-          随机出题
-        </button>
-        <button
-          id="btn2"
-          type="button"
-          onclick="showAnswer('chinese');"
-          aria-controls="words-table"
+      <div class="home-progress" aria-label="学习进度">
+        <p class="home-progress-label">积累</p>
+        <p class="home-progress-stats" id="home-progress-stats">加载中…</p>
+        <div
+          class="home-progress-track"
+          role="progressbar"
+          aria-label="已掌握进度"
         >
-          <info text="no">显示答案</info>
-        </button>
+          <div class="home-progress-fill" id="home-progress-fill"></div>
+        </div>
       </div>
-      <p class="quiz-hint" style="display: none">
-        可在答题框内输入答案，点击「显示答案」可查看参考答案，点击红灯将单词加入难词库，增加单词的练习频率，点击绿灯表示单词已完全掌握，无需再练习，再次点击取消操作。
-      </p>
-      <div class="quiz-light-legend" aria-label="标记说明" style="display: none">
-        <span><i class="light-dot light-red"></i>红灯：难词库</span>
-        <span><i class="light-dot light-green"></i>绿灯：已掌握</span>
-        <span><i class="light-dot light-yellow"></i>黄灯：已标记，再点取消</span>
+
+      <div class="home-grid">
+        <a class="home-card" href="EtoC.html">
+          <span class="home-card-title">看英文写中文</span>
+          <span class="home-card-desc">看到英文，写出中文意思</span>
+        </a>
+        <a class="home-card" href="CtoE.html">
+          <span class="home-card-title">看中文写英文</span>
+          <span class="home-card-desc">看到中文，拼出英文单词</span>
+        </a>
+        <a class="home-card" href="sentence.html">
+          <span class="home-card-title">勤学不辍</span>
+          <span class="home-card-desc">中英配对，巩固记忆</span>
+        </a>
+        <a class="home-card" href="needle.html">
+          <span class="home-card-title">铁杵成针</span>
+          <span class="home-card-desc">专攻难词，反复打磨</span>
+        </a>
+        <a class="home-card" href="accumulate.html">
+          <span class="home-card-title">日积月累</span>
+          <span class="home-card-desc">读小故事，逐词积累</span>
+        </a>
+        <a class="home-card" href="roots.html">
+          <span class="home-card-title">水滴石穿</span>
+          <span class="home-card-desc">学词根词缀，举一反三</span>
+        </a>
       </div>
-      <div class="quiz-export-corner">
-        <button type="button" id="btn-export-mastered">导出已掌握</button>
-        <button type="button" id="btn-export-needle">导出难词库</button>
-      </div>
-      <table id="words-table">
-        <tbody></tbody>
-      </table>
     </div>
   </body>
 </html>

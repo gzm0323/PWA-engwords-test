@@ -3,13 +3,7 @@
   <head>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KXS2DY9MQ6"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-KXS2DY9MQ6');
-    </script>
+    <script src="scripts/analytics.js"></script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>勤学不辍 · 中英配对</title>
@@ -17,11 +11,12 @@
       name="description"
       content="从难词库随机抽取 5 组单词，进行中英点击配对练习。"
     />
-    <meta name="theme-color" content="#334" />
+    <meta name="theme-color" content="#2A2F45" />
     <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
     <link rel="stylesheet" href="styles/basic.css" media="screen" />
     <script src="scripts/jquery-1.11.3.js" defer></script>
-    <script src="./words_f.txt" defer></script>
+    <script src="./words_f.js" defer></script>
     <script src="scripts/word_policy.js" defer></script>
     <script src="scripts/quiz_storage.js" defer></script>
     <script src="scripts/hard_words.js" defer></script>
@@ -31,8 +26,10 @@
   <body>
     <div id="header">
       <p>
-        <span class="title-full">初中英语单词练习测试机</span>
-        <span class="title-short" aria-hidden="true">初中英语单词测试</span>
+        <a href="index.html">
+          <span class="title-full">初中英语单词练习测试机</span>
+          <span class="title-short" aria-hidden="true">初中英语单词测试</span>
+        </a>
       </p>
     </div>
 
